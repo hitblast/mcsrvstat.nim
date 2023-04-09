@@ -34,7 +34,12 @@ proc run*(): Future[void] {.async.} =
             platform: platform
         )
 
-    await server.refreshData()
+    try:
+        await server.refreshData()
+    except ConnectionError:
+        echo("\nMake sure you've passed the correct IP for the server.")
+        quit(1)
+
     discard execShellCmd(if hostOS == "windows": "cls" else: "clear")
 
     # The primary UI section.
