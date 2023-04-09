@@ -1,4 +1,4 @@
-name: Build
+name: Builds & Tests
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  main:
     name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
@@ -28,6 +28,10 @@ jobs:
         version: ${{ matrix.nimversion }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Run Tests
+      run: |
+        nimble -d:ssl test
 
     - name: Build
       run: |
