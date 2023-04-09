@@ -35,9 +35,10 @@ proc run*(): Future[void] {.async.} =
         )
 
     await server.refreshData()
-    discard execShellCmd("clear")
+    discard execShellCmd(if hostOS == "windows": "cls" else: "clear")
 
-    echo "\n--- GENERAL ---\n"
+    # The primary UI section.
+    echo "\n--- BASIC CREDENTIALS ---\n"
     echo fmt"Online: {server.online}"
     echo fmt"IP: {server.ip}"
     echo fmt"Port: {server.port}"
@@ -59,16 +60,24 @@ proc run*(): Future[void] {.async.} =
             echo fmt"{name}: {value.get()}"
 
     echo "\n--- DEBUG VALUES ---\n"
-    echo fmt"ping: {server.debug.ping}"
-    echo fmt"query: {server.debug.query}"
-    echo fmt"srv: {server.debug.srv}"
-    echo fmt"querymismatch: {server.debug.querymismatch}"
-    echo fmt"ipinsrv: {server.debug.ipinsrv}"
-    echo fmt"cnameinsrv: {server.debug.cnameinsrv}"
-    echo fmt"animatedmotd: {server.debug.animatedmotd}"
-    echo fmt"cachetime: {server.debug.cachetime}"
-    echo fmt"cacheexpire: {server.debug.cacheexpire}"
-    echo fmt"apiversion: {server.debug.apiversion}"
+
+    for (name, value) in [
+        ("Ping", server.debug.ping),
+        ("Query", server.debug.query),
+        ("Srv", server.debug.srv),
+        ("Query Mismatch", server.debug.querymismatch),
+        ("IP in srv", server.debug.ipinsrv),
+        ("CNAME in srv", server.debug.cnameinsrv),
+        ("Animated MOTD", server.debug.animatedmotd),
+    ]:
+        echo fmt"{name}: {value}"
+
+    for (name, value) in [
+        ("Cache Time", server.debug.cachetime),
+        ("Cache Expire", server.debug.cacheexpire),
+        ("API Version", server.debug.apiversion)
+    ]:
+        echo fmt"{name}: {value}"
 
 
 # Run the program.
