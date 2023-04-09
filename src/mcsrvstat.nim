@@ -43,7 +43,7 @@ proc run*(): Future[void] {.async.} =
     discard execShellCmd(if hostOS == "windows": "cls" else: "clear")
 
     # The primary UI section.
-    echo "\n--- BASIC CREDENTIALS ---\n"
+    echo "\n--- BASIC ---\n"
     echo fmt"Online: {server.online}"
     echo fmt"IP: {server.ip}"
     echo fmt"Port: {server.port}"
