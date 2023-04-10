@@ -35,6 +35,17 @@ type
     ConnectionError* = object of HttpRequestError
 
 
+#[
+    These are the primary and helper procedures for processing the data
+    we get from performing a GET request to the API in general.
+
+    Note that exporting any of these procs without proper notice might
+    cause a fair share of issues with the user experience.
+
+    Thanks for keeping the code clean! :)
+]#
+
+
 # Procedure for retrieving data.
 proc refreshData*(self: Server): Future[void] {.async.} =
     let client = newAsyncHttpClient()
@@ -67,6 +78,25 @@ proc retrieveOptionalStr(self: Server, key: string): Option[string] =
         return some(self.retrieveData(key).getStr())
     except DataError:
         return none(string)
+
+# Helper-procedure for help mapping plugins, mods and other procs.
+proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
+    let
+        data = self.retrieveData(key1)
+        mapped = map(toSeq(data[key2]), proc(x: JsonNode): string = x.getStr())
+
+    return mapped
+
+
+#[
+    This is where the primary, public procedures are written for the end-developer to access.
+    Stuff before this part is mostly the foundation for processing the data.
+
+    If you need to write a helper function for a new feature / modification,
+    consider writing it above this multiline comment.
+
+    Once again, thanks for keeping the code clean! :D
+]#
 
 
 # Procedure for getting server status.
@@ -135,10 +165,9 @@ proc serverid*(self: Server): Option[string] =
 proc motd*(self: Server): Option[ServerMOTD] =
     try:
         let
-            data = self.retrieveData("motd")
-            raw = map(toSeq(data["raw"]), proc(x: JsonNode): string = x.getStr())
-            clean = map(toSeq(data["clean"]), proc(x: JsonNode): string = x.getStr())
-            html = map(toSeq(data["html"]), proc(x: JsonNode): string = x.getStr())
+            raw = self.returnMappedStr("motd", "raw")
+            clean = self.returnMappedStr("motd", "clean")
+            html = self.returnMappedStr("motd", "html")
 
             motd = ServerMOTD(
                 raw: raw,
