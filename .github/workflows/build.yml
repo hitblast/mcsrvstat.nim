@@ -37,4 +37,4 @@ jobs:
       run: nimble check
 
     - name: Build (SSL added)
-      run: nimble -d:ssl build
+      run: nimble -d:ssl build --accept
