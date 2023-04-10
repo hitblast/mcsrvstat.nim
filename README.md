@@ -4,6 +4,6 @@
 
 An asynchronous Nim wrapper for the Minecraft Server Status API
 
-[![Builds & Tests](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml)
+[![Build](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml)
 
 </div>
