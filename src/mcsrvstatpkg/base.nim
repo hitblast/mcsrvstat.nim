@@ -37,7 +37,8 @@ type
 
 #[
     These are the primary and helper procedures for processing the data
-    we get from performing a GET request to the API in general.
+    we get from performing a GET request to the API in general. Most of
+    these (should) originate from the Server object.
 
     Note that exporting any of these procs without proper notice might
     cause a fair share of issues with the user experience.
