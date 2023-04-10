@@ -31,13 +31,17 @@ import std/[
     strformat,
     strutils
 ]
+
 import simple_parseopt
+import illwill
 
 import mcsrvstatpkg/base
 
 
 # Primary run() procedure for the hybrid package.
 proc run*(): Future[void] {.async.} =
+
+    # Terminal options for accessing the app from the command-line.
     let 
         options = get_options:
             address: string
@@ -48,23 +52,40 @@ proc run*(): Future[void] {.async.} =
             platform: if options.bedrock: Platform.BEDROCK else: Platform.JAVA
         )
 
+    # Try to process the data.
+    # If failed, show warning message for incorrect IP and quit with error code.
     try:
         await server.refreshData()
     except ConnectionError:
         echo("Make sure you've passed the correct IP for the server.")
         quit(1)
 
-    # The primary UI section.
-    echo "--- BASIC ---\n"
-    echo fmt"Online: {server.online}"
-    echo fmt"IP: {server.ip}"
-    echo fmt"Port: {server.port}"
+    # And if it succeeds, initialize an instance of illwave and run the app.
+    # This includes a cursor-less window, so an exit procedure is also required.
+    proc exitProc() {.noconv.} =
+        illwillDeinit()
+        showCursor()
+        quit(0)
 
-    echo "\n--- DATA ---\n"
-    echo fmt"Version: {server.version}"
+    illwillInit(fullscreen=true)
+    var
+        tb = newTerminalBuffer(terminalWidth(), terminalHeight())
+        yCoord = 11
 
+    tb.setForegroundColor(fgWhite, true)
+    tb.write(2, 1, "[ Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "q", fgWhite, " to quit. ]")
+    tb.drawRect(0, 0, 40, 7)
+    tb.drawHorizLine(2, 38, 2, doubleStyle=true)
+
+    # Basic
+    tb.write(2, 4, "Online: ", (if server.online: fgGreen else: fgRed), $server.online, fgWhite)
+    tb.write(2, 5, "IP: ", server.ip)
+    tb.write(2, 6, "Port: ", $server.port)
+
+    # Data
+    tb.write(2, 9, fmt"Version: {server.version}")
     if server.protocol.isSome:
-        echo fmt"Protocol: {server.protocol.get()}"
+        tb.write(2, 10, fmt"Protocol: {server.protocol.get()}")
 
     for (name, value) in [
         ("Hostname", server.hostname), 
@@ -74,9 +95,8 @@ proc run*(): Future[void] {.async.} =
         ("ID", server.serverid)
     ]:
         if value.isSome:
-            echo fmt"{name}: {value.get()}"
-
-    echo "\n--- DEBUG VALUES ---\n"
+            tb.write(2, yCoord, fmt"{name}: {value.get()}")
+            yCoord += 1
 
     for (name, value) in [
         ("Ping", server.debug.ping),
@@ -87,14 +107,28 @@ proc run*(): Future[void] {.async.} =
         ("CNAME in srv", server.debug.cnameinsrv),
         ("Animated MOTD", server.debug.animatedmotd),
     ]:
-        echo fmt"{name}: {value}"
+        yCoord += 1
+        tb.write(2, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
+
+    tb.drawHorizLine(2, 38, 19)
+    yCoord += 1
 
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
         ("Cache Expire", server.debug.cacheexpire),
         ("API Version", server.debug.apiversion)
     ]:
-        echo fmt"{name}: {value}"
+        yCoord += 1
+        tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
+
+    while true:
+        tb.display()
+
+        var key = getKey()
+        case key
+        of Key.Escape, Key.Q: exitProc()
+        else:
+            discard
 
 
 # Run the program.

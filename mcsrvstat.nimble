@@ -13,3 +13,4 @@ bin           = @["mcsrvstat"]
 
 requires "nim >= 1.6"
 requires "simpleparseopt >= 1.1.1"
+requires "illwill >= 0.3.0"
