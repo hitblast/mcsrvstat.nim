@@ -12,3 +12,4 @@ bin           = @["mcsrvstat"]
 # Dependencies
 
 requires "nim >= 1.6"
+requires "simpleparseopt >= 1.1.1"

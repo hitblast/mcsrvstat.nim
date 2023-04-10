@@ -6,44 +6,31 @@ import std/[
     strformat,
     strutils
 ]
+import simple_parseopt
+
 import mcsrvstatpkg/base
-
-
-# Procedure for defining the server's platform.
-proc askForServerPlatform(): Platform =
-    echo "\nEnter server edition (Java J / Bedrock B):"
-
-    case (toLower(readLine(stdin)))
-    of "java", "j":
-        return Platform.JAVA
-    of "bedrock", "b":
-        return Platform.BEDROCK
-    else:
-        echo "\nInvalid platform passed. Retry with Java (J) or Bedrock (B)."
-        quit(1)
 
 
 # Primary run() procedure for the hybrid package.
 proc run*(): Future[void] {.async.} =
-    echo "\nEnter server IP:"
-    let
-        address = readLine(stdin)
-        platform = askForServerPlatform()
+    let 
+        options = get_options:
+            address: string
+            bedrock: bool = False
+
         server = Server(
-            address: address,
-            platform: platform
+            address: options.address,
+            platform: if options.bedrock: Platform.BEDROCK else: Platform.JAVA
         )
 
     try:
         await server.refreshData()
     except ConnectionError:
-        echo("\nMake sure you've passed the correct IP for the server.")
+        echo("Make sure you've passed the correct IP for the server.")
         quit(1)
 
-    discard execShellCmd(if hostOS == "windows": "cls" else: "clear")
-
     # The primary UI section.
-    echo "\n--- BASIC ---\n"
+    echo "--- BASIC ---\n"
     echo fmt"Online: {server.online}"
     echo fmt"IP: {server.ip}"
     echo fmt"Port: {server.port}"
