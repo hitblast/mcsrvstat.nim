@@ -32,8 +32,8 @@ import std/[
     strutils
 ]
 
-import simple_parseopt
 import illwill
+import therapist
 
 import mcsrvstatpkg/base
 
@@ -42,18 +42,18 @@ import mcsrvstatpkg/base
 proc run*(): Future[void] {.async.} =
 
     # Terminal options for accessing the app from the command-line.
-    let 
-        options = get_options:
-            address: string
-            bedrock: bool = False
+    let spec = (
+        address: newStringArg(@["<address>"], help="The IP address of the server."),
+        bedrock: newBoolArg(@["-b", "--bedrock"], defaultVal=false, help="Flags the server as a Minecraft Bedrock server."),
+        help: newHelpArg(@["-h", "--help"], help="Show help message")
+    )
+    spec.parseOrQuit(prolog="mcsrvstat.nim", command="search")
 
-        server = Server(
-            address: options.address,
-            platform: if options.bedrock: Platform.BEDROCK else: Platform.JAVA
-        )
+    let server = Server(
+        address: spec.address.value,
+        platform: if spec.bedrock.value: Platform.BEDROCK else: Platform.JAVA
+    )
 
-    # Try to process the data.
-    # If failed, show warning message for incorrect IP and quit with error code.
     try:
         await server.refreshData()
     except ConnectionError:

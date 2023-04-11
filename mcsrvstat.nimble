@@ -12,5 +12,5 @@ bin           = @["mcsrvstat"]
 # Dependencies
 
 requires "nim >= 1.6"
-requires "simpleparseopt >= 1.1.1"
+requires "therapist >= 0.2.0"
 requires "illwill >= 0.3.0"
