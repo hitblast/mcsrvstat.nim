@@ -5,5 +5,6 @@
 An asynchronous Nim wrapper for the [Minecraft Server Status API](https://mcsrvstat.us/).
 
 [![Build](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/build.yml)
+[![Deploy to Pages](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml)
 
 </div>
