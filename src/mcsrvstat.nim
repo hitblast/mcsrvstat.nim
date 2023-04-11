@@ -110,8 +110,8 @@ proc run*(): Future[void] {.async.} =
         yCoord += 1
         tb.write(2, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
 
-    tb.drawHorizLine(2, 38, 19)
-    yCoord += 1
+    tb.drawHorizLine(2, 38, yCoord + 1)
+    yCoord += 2
 
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
