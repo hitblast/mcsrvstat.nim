@@ -40,7 +40,7 @@ jobs:
       - name: Build
         run: |
           nimble doc2 src/mcsrvstatpkg/base.nim --accept
-          cd src/mcsrvstatpkg
+          cd src/mcsrvstatpkg/htmldocs
           mv base.html index.html
         
       - name: Upload artifact
