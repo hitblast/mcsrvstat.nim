@@ -43,8 +43,8 @@ proc run*(): Future[void] {.async.} =
 
     # Terminal options for accessing the app from the command-line.
     let spec = (
-        address: newStringArg(@["<address>"], help="The IP address of the server."),
-        bedrock: newBoolArg(@["-b", "--bedrock"], defaultVal=false, help="Flags the server as a Minecraft Bedrock server."),
+        address: newStringArg(@["<address>"], help="The IP address of the server"),
+        bedrock: newBoolArg(@["-b", "--bedrock"], defaultVal=false, help="Flags the server as a Minecraft Bedrock server"),
         help: newHelpArg(@["-h", "--help"], help="Show help message")
     )
     spec.parseOrQuit(prolog="mcsrvstat.nim", command="search")
