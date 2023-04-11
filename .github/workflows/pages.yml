@@ -38,12 +38,15 @@ jobs:
         uses: actions/configure-pages@v2
 
       - name: Build
-        run: nimble doc2 src/mcsrvstatpkg/base.nim --accept
+        run: |
+          nimble doc2 src/mcsrvstatpkg/base.nim --accept
+          cd src/mcsrvstatpkg
+          mv base.html index.html
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: './src/mcsrvstatpkg/htmldocs'
+          path: './src/mcsrvstatpkg/htmldocs/*'
           
       - name: Deploy to GitHub Pages
         id: deployment
