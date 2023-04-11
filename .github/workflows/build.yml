@@ -56,4 +56,3 @@ jobs:
       with:
         name: ${{ matrix.artifact }}
         path: ${{ matrix.filename }}
-        retention-days: 10
