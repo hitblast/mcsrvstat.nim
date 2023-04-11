@@ -19,10 +19,20 @@ jobs:
       matrix:
         nimversion:
           - binary:stable
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            filename: mcsrvstat
+            artifact: linux-x64
+
+          - os: macos-latest
+            filename: mcsrvstat
+            artifact: darwin-x64
+
+          - os: windows-latest
+            filename: mcsrvstat.exe
+            artifact: win-x64
 
     steps:
     - name: Checkout
@@ -39,7 +49,10 @@ jobs:
       run: nimble check
 
     - name: Build
-      run: nimble -d:ssl build --accept
+      run: nimble -d:ssl build --verbose --accept
 
-    - name: LS (test)
-      run: ls
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.artifact }}
+        path: ${{ matrix.filename }}
