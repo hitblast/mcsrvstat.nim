@@ -38,7 +38,7 @@ jobs:
         uses: actions/configure-pages@v2
 
       - name: Build
-        run: nimble doc2 src/mcsrvstatpkg/base.nim
+        run: nimble doc2 src/mcsrvstatpkg/base.nim --accept
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
