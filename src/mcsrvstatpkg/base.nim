@@ -91,7 +91,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
 # Procedure for retrieving the desired data using a key.
 proc retrieveData(self: Server, key: string): JsonNode =
     if not self.data.isSome:
-        raise NotInitializedError.newException("You did not initialize the Server object using refreshData() first.")
+        raise NotInitializedError.newException("You did not initialize the Server object using the refreshData() procedure first.")
     else:
         try:
             return self.data.get()[key]
