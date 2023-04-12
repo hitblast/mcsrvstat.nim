@@ -55,7 +55,7 @@ jobs:
 
 
   build-windows:
-    name: build-windows
+    name: windows-latest
     runs-on: windows-latest
 
     steps:
