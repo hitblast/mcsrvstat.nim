@@ -51,7 +51,7 @@ jobs:
     - name: Download DLLs
       uses: valitydev/action-download-file@v1
       with:
-        url: https://nim-lang.org/download/dlls.zip --output dlls.zip
+        url: https://nim-lang.org/download/dlls.zip
         target-path: .
 
     - name: Unzip
