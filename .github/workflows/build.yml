@@ -49,7 +49,7 @@ jobs:
       run: nimble check
 
     - name: Build
-      run: nimble -d:ssl build --verbose --accept
+      run: nimble build --verbose --accept
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
