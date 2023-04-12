@@ -23,11 +23,9 @@ jobs:
         os: [ubuntu-latest, macos-latest]
         include:
           - os: ubuntu-latest
-            filename: mcsrvstat
             artifact: linux-x64
 
           - os: macos-latest
-            filename: mcsrvstat
             artifact: darwin-x64
 
     steps:
@@ -51,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ matrix.artifact }}
-        path: ${{ matrix.filename }}
+        path: mcsrvstat
 
 
   build-windows:
@@ -72,5 +70,29 @@ jobs:
     - name: Check package validity
       run: nimble check
 
+    - name: Download DLLs
+      uses: wei/wget@v1
+      with:
+        args: -O dlls.zip https://nim-lang.org/download/dlls.zip
+
+    - name: Unzip DLLs
+      uses: montudor/action-zip@v1
+      with:
+        args: unzip -qq dlls.zip
+
     - name: Build
       run: nimble build -d:release --accept
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: win-x64
+        path: |
+          mcsrvstat.exe
+          cacert.pem
+          libcrypto-1_1.dll
+          libcrypto-1_1-x64.dll
+          sqlite3_32.dll
+          sqlite3_64.dll
+          libssl-1_1.dll
+          libssl-1_1-x64.dll

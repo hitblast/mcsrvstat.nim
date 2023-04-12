@@ -139,4 +139,7 @@ proc run*(): Future[void] {.async.} =
 
 # Run the program.
 when isMainModule:
-    waitFor run()
+    try:
+        waitFor run()
+    except IOError:
+        echo "Cannot run mcsrvstat.nim since proper SSL support couldn't be found."
