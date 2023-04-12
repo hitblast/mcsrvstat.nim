@@ -52,9 +52,38 @@ jobs:
         path: mcsrvstat
 
 
+  dll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download DLLs
+        uses: wei/curl@master
+        with:
+          args: https://nim-lang.org/download/dlls.zip --output dlls.zip
+
+      - name: Unzip
+        uses: montudor/action-zip@v1
+        with:
+          args: unzip -qq dlls.zip
+
+      - name: Upload DLLs artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dlls
+          path: |
+            cacert.pem
+            libcrypto-1_1.dll
+            libcrypto-1_1-x64.dll
+            sqlite3_32.dll
+            sqlite3_64.dll
+            libssl-1_1.dll
+            libssl-1_1-x64.dll
+
+
   build-windows:
     name: windows-latest
+
     runs-on: windows-latest
+    needs: dll
 
     steps:
     - name: Checkout
@@ -70,15 +99,18 @@ jobs:
     - name: Check package validity
       run: nimble check
 
-    - name: Download DLLs
-      uses: carlosperate/download-file-action@v2
+    - name: Download DLLs artifacts
+      uses: actions/download-artifact@v3
       with:
-        file-url: https://nim-lang.org/download/dlls.zip
+        name: dlls
 
     - name: Unzip DLLs
       uses: montudor/action-zip@v1
       with:
         args: unzip -qq dlls.zip
+
+    - name: LS (tests)
+      run: ls
 
     - name: Build
       run: nimble build -d:release --accept
