@@ -55,7 +55,7 @@ jobs:
 
 
   build-windows:
-    name: windows-latest
+    name: build-windows
     runs-on: windows-latest
 
     strategy:
