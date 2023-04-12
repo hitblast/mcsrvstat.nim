@@ -94,17 +94,17 @@ jobs:
     needs: [build, dll]
 
     steps:
-    - name: Download DLLs artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: dlls
-
     - name: Download binary artifact
       uses: actions/download-artifact@v3
       with:
         name: binary-win-x64
 
-    - name: Compress files
+    - name: Download DLLs artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: dlls
+
+    - name: Compress
       uses: montudor/action-zip@v1
       with:
         args: zip -qq -r package-win-x64.zip .
@@ -114,3 +114,10 @@ jobs:
       with:
         name: package-win-x64
         path: package-win-x64.zip
+
+    - name: Purge unnecessary artifacts
+      uses: geekyeggo/delete-artifact@v2
+      with:
+        name: |
+          binary-windows-x64
+          dlls
