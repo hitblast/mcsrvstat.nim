@@ -71,10 +71,9 @@ jobs:
       run: nimble check
 
     - name: Download DLLs
-      uses: valitydev/action-download-file@v1
+      uses: carlosperate/download-file-action@v2
       with:
-        url: https://nim-lang.org/download/dlls.zip
-        target-path: .
+        file-url: https://nim-lang.org/download/dlls.zip
 
     - name: Unzip DLLs
       uses: montudor/action-zip@v1
