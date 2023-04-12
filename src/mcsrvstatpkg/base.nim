@@ -52,6 +52,15 @@ type
     ServerMOTD* = object
         raw*, clean*, html*: seq[string]
 
+    ServerPlugins* = object
+        names*, raw*: seq[string]
+
+    ServerMods* = object
+        names*, raw*: seq[string]
+
+    ServerInfo* = object
+        raw*, clean*, html*: seq[string]
+
 
 # Custom exception objects for handling data-related errors.
 type
@@ -205,3 +214,74 @@ proc motd*(self: Server): Option[ServerMOTD] =
 
     except DataError:
         return none(ServerMOTD)
+
+# Procedure for getting the plugins of a server.
+proc plugins*(self: Server): Option[ServerPlugins] =
+    try:
+        let
+            names = self.returnMappedStr("plugins", "names")
+            raw = self.returnMappedStr("plugins", "raw")
+
+            plugins = ServerPlugins(
+                names: names,
+                raw: raw
+            )
+
+        return some(plugins)
+
+    except DataError:
+        return none(ServerPlugins)
+
+# Procedure for getting the mods of a server.
+proc mods*(self: Server): Option[ServerMods] =
+    try:
+        let
+            names = self.returnMappedStr("mods", "names")
+            raw = self.returnMappedStr("mods", "raw")
+
+            mods = ServerMods(
+                names: names,
+                raw: raw
+            )
+
+        return some(mods)
+
+    except DataError:
+        return none(ServerMods)
+
+# Procedure for getting the info attribute of a server.
+proc info*(self: Server): Option[ServerInfo] =
+    try:
+        let
+            raw = self.returnMappedStr("info", "raw")
+            clean = self.returnMappedStr("info", "clean")
+            html = self.returnMappedStr("info", "html")
+
+            info = ServerInfo(
+                raw: raw,
+                clean: clean,
+                html: html
+            )
+
+        return some(info)
+
+    except DataError:
+        return none(ServerInfo)
+
+# Procedure for getting the player count of a server.
+proc playerCount*(self: Server): Option[(int, int)] =
+    try:
+        let
+            count = self.retrieveData("players")
+            online = count["online"].getInt()
+            max = count["max"].getInt()
+
+        return some(
+            (
+                online: online,
+                max: max
+            )
+        )
+
+    except DataError:
+        return none((int, int))

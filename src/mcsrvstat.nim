@@ -70,8 +70,9 @@ proc run*(): Future[void] {.async.} =
     illwillInit(fullscreen=true)
     var
         tb = newTerminalBuffer(terminalWidth(), terminalHeight())
-        yCoord = 11
+        yCoord = 1
 
+    # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
     tb.write(2, 1, "[ Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "q", fgWhite, " to quit. ]")
     tb.drawRect(0, 0, 40, 7)
@@ -87,6 +88,8 @@ proc run*(): Future[void] {.async.} =
     if server.protocol.isSome:
         tb.write(2, 10, fmt"Protocol: {server.protocol.get()}")
 
+    tb.drawVertLine(40, 20, 2)
+
     for (name, value) in [
         ("Hostname", server.hostname), 
         ("Software", server.software), 
@@ -95,7 +98,7 @@ proc run*(): Future[void] {.async.} =
         ("ID", server.serverid)
     ]:
         if value.isSome:
-            tb.write(2, yCoord, fmt"{name}: {value.get()}")
+            tb.write(45, yCoord, fmt"{name}: {value.get()}")
             yCoord += 1
 
     for (name, value) in [
@@ -108,11 +111,9 @@ proc run*(): Future[void] {.async.} =
         ("Animated MOTD", server.debug.animatedmotd),
     ]:
         yCoord += 1
-        tb.write(2, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
+        tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
 
-    tb.drawHorizLine(2, 38, yCoord + 1)
-    yCoord += 2
-
+    yCoord = 12
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
         ("Cache Expire", server.debug.cacheexpire),
@@ -121,6 +122,7 @@ proc run*(): Future[void] {.async.} =
         yCoord += 1
         tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
 
+    # Finally, display the entire thing.
     while true:
         tb.display()
 
