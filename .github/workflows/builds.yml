@@ -119,5 +119,5 @@ jobs:
       uses: geekyeggo/delete-artifact@v2
       with:
         name: |
-          binary-windows-x64
+          binary-win-x64
           dlls
