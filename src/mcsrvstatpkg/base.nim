@@ -61,6 +61,9 @@ type
     ServerInfo* = object
         raw*, clean*, html*: seq[string]
 
+    PlayerCount* = object
+        online*, max*: int
+
 
 # Custom exception objects for handling data-related errors.
 type
@@ -148,21 +151,20 @@ proc port*(self: Server): int =
 
 # Procedure for getting the debug values of a server.
 proc debug*(self: Server): ServerDebugValues =
-    let
-        data = self.retrieveData("debug")
-        debug = ServerDebugValues(
-            ping: data["ping"].getBool(),
-            query: data["query"].getBool(),
-            srv: data["srv"].getBool(),
-            querymismatch: data["querymismatch"].getBool(),
-            ipinsrv: data["ipinsrv"].getBool(),
-            cnameinsrv: data["cnameinsrv"].getBool(),
-            animatedmotd: data["animatedmotd"].getBool(),
-            cachetime: data["cachetime"].getInt(),
-            cacheexpire: data["cacheexpire"].getInt(),
-            apiversion: data["apiversion"].getInt()
-        )
-    return debug
+    let data = self.retrieveData("debug")
+
+    return ServerDebugValues(
+        ping: data["ping"].getBool(),
+        query: data["query"].getBool(),
+        srv: data["srv"].getBool(),
+        querymismatch: data["querymismatch"].getBool(),
+        ipinsrv: data["ipinsrv"].getBool(),
+        cnameinsrv: data["cnameinsrv"].getBool(),
+        animatedmotd: data["animatedmotd"].getBool(),
+        cachetime: data["cachetime"].getInt(),
+        cacheexpire: data["cacheexpire"].getInt(),
+        apiversion: data["apiversion"].getInt()
+    )
 
 # Procedure for getting the version of a server.
 proc version*(self: Server): string =
@@ -204,13 +206,13 @@ proc motd*(self: Server): Option[ServerMOTD] =
             clean = self.returnMappedStr("motd", "clean")
             html = self.returnMappedStr("motd", "html")
 
-            motd = ServerMOTD(
+        return some(
+            ServerMOTD(
                 raw: raw,
                 clean: clean,
                 html: html
             )
-
-        return some(motd)
+        )
 
     except DataError:
         return none(ServerMOTD)
@@ -222,12 +224,12 @@ proc plugins*(self: Server): Option[ServerPlugins] =
             names = self.returnMappedStr("plugins", "names")
             raw = self.returnMappedStr("plugins", "raw")
 
-            plugins = ServerPlugins(
+        return some(
+            ServerPlugins(
                 names: names,
                 raw: raw
             )
-
-        return some(plugins)
+        )
 
     except DataError:
         return none(ServerPlugins)
@@ -239,12 +241,12 @@ proc mods*(self: Server): Option[ServerMods] =
             names = self.returnMappedStr("mods", "names")
             raw = self.returnMappedStr("mods", "raw")
 
-            mods = ServerMods(
+        return some(
+            ServerMods(
                 names: names,
                 raw: raw
             )
-
-        return some(mods)
+        )
 
     except DataError:
         return none(ServerMods)
@@ -257,19 +259,19 @@ proc info*(self: Server): Option[ServerInfo] =
             clean = self.returnMappedStr("info", "clean")
             html = self.returnMappedStr("info", "html")
 
-            info = ServerInfo(
+        return some(
+            ServerInfo(
                 raw: raw,
                 clean: clean,
                 html: html
             )
-
-        return some(info)
+        )
 
     except DataError:
         return none(ServerInfo)
 
 # Procedure for getting the player count of a server.
-proc playerCount*(self: Server): Option[(int, int)] =
+proc playerCount*(self: Server): Option[PlayerCount] =
     try:
         let
             count = self.retrieveData("players")
@@ -277,11 +279,11 @@ proc playerCount*(self: Server): Option[(int, int)] =
             max = count["max"].getInt()
 
         return some(
-            (
+            PlayerCount(
                 online: online,
                 max: max
             )
         )
 
     except DataError:
-        return none((int, int))
+        return none(PlayerCount)

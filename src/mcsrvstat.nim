@@ -70,7 +70,7 @@ proc run*(): Future[void] {.async.} =
     illwillInit(fullscreen=true)
     var
         tb = newTerminalBuffer(terminalWidth(), terminalHeight())
-        yCoord = 1
+        yCoord = 14
 
     # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
@@ -83,12 +83,25 @@ proc run*(): Future[void] {.async.} =
     tb.write(2, 5, "IP: ", server.ip)
     tb.write(2, 6, "Port: ", $server.port)
 
-    # Data
+    # Data (section 1)
     tb.write(2, 9, fmt"Version: {server.version}")
     if server.protocol.isSome:
         tb.write(2, 10, fmt"Protocol: {server.protocol.get()}")
 
     tb.drawVertLine(40, 20, 2)
+    if server.playerCount.isSome:
+        tb.write(2, 12, fmt"Players online: {server.playerCount.get().online} / {server.playerCount.get().max}")
+
+    for (name, value) in [
+        ("Cache Time", server.debug.cachetime),
+        ("Cache Expire", server.debug.cacheexpire),
+        ("API Version", server.debug.apiversion)
+    ]:
+        tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
+        yCoord += 1
+
+    # Data (section 2)
+    yCoord = 1
 
     for (name, value) in [
         ("Hostname", server.hostname), 
@@ -112,15 +125,6 @@ proc run*(): Future[void] {.async.} =
     ]:
         yCoord += 1
         tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
-
-    yCoord = 12
-    for (name, value) in [
-        ("Cache Time", server.debug.cachetime),
-        ("Cache Expire", server.debug.cacheexpire),
-        ("API Version", server.debug.apiversion)
-    ]:
-        yCoord += 1
-        tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
 
     # Finally, display the entire thing.
     while true:
