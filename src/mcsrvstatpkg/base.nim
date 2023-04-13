@@ -37,8 +37,8 @@ import std/[
 # Type declarations.
 type
     Platform* {.pure.} = enum
-        JAVA = "2/"
-        BEDROCK = "bedrock/2/"
+        JAVA
+        BEDROCK
 
     Server* = ref object
         address*: string
@@ -87,8 +87,10 @@ type
 # Procedure for retrieving data.
 proc refreshData*(self: Server): Future[void] {.async.} =
     let client = newAsyncHttpClient()
+    let platform = if self.platform == Platform.JAVA: "2/" else: "bedrock/2/"
+
     let data = parseJson(await client.getContent(
-            fmt"https://api.mcsrvstat.us/{self.platform}{self.address}"))
+            fmt"https://api.mcsrvstat.us/{platform}{self.address}"))
 
     if (
         data["debug"].hasKey("error") and
