@@ -37,39 +37,47 @@ import std/[
 # Type declarations.
 type
     Platform* {.pure.} = enum
+        ## Represents the platform (or edition) of a Minecraft server.
         JAVA
         BEDROCK
 
     Server* = ref object
+        ## Represents an object reference of a Minecraft server. You will primarily use this object to interact with the API.
         address*: string
         platform*: Platform
         data*: Option[JsonNode]
 
     ServerDebugValues* = object
+        ## Represents the debug values related to a Minecraft server.
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
     ServerMOTD* = object
+        ## Represents the MOTD (Message of The Day) of the server (if any).
         raw*, clean*, html*: seq[string]
 
     ServerPlugins* = object
+        ## Represents the plugins installed on the server (if detected).
         names*, raw*: seq[string]
 
     ServerMods* = object
+        ## Represents the mods installed on the server (if detected).
         names*, raw*: seq[string]
 
     ServerInfo* = object
+        ## Represents certain information related to the Minecraft server. Only included if the server uses player samples for information.
         raw*, clean*, html*: seq[string]
 
     PlayerCount* = object
+        ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
         online*, max*: int
 
 
 # Custom exception objects for handling data-related errors.
 type
-    NotInitializedError* = object of KeyError
-    DataError* = object of KeyError
-    ConnectionError* = object of HttpRequestError
+    NotInitializedError* = object of KeyError  ## Raised when the data required is missing from an instance of the `Server` object. This typically happens when `Server.refreshData()` has not been executed anywhere before interacting with the package.
+    DataError* = object of KeyError  ## An internal exception primarily related to the library itself. Raised when the given key for accessing a particular data is not found.
+    ConnectionError* = object of HttpRequestError  ## Raised when an attempt to connect with the API has failed. This mainly happens when the user passes an incorrect IP address.
 
 
 #[
@@ -272,7 +280,6 @@ proc info*(self: Server): Option[ServerInfo] =
     except DataError:
         return none(ServerInfo)
 
-# Procedure for getting the player count of a server.
 proc playerCount*(self: Server): Option[PlayerCount] =
     try:
         let
