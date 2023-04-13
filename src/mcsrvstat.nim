@@ -136,6 +136,8 @@ proc run*(): Future[void] {.async.} =
         else:
             discard
 
+        await sleepAsync(10)
+
 
 # Run the program.
 when isMainModule:
