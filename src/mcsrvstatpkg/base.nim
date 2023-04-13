@@ -53,19 +53,19 @@ type
         cachetime*, cacheexpire*, apiversion*: int
 
     ServerMOTD* = object
-        ## Represents the MOTD (Message of The Day) of the server (if any).
+        ## Represents the MOTD (Message of The Day) of a Minecraft server.
         raw*, clean*, html*: seq[string]
 
     ServerPlugins* = object
-        ## Represents the plugins installed on the server (if detected).
+        ## Represents the plugins used on a Minecraft server.
         names*, raw*: seq[string]
 
     ServerMods* = object
-        ## Represents the mods installed on the server (if detected).
+        ## Represents the mods installed on a Minecraft server.
         names*, raw*: seq[string]
 
     ServerInfo* = object
-        ## Represents certain information related to the Minecraft server. Only included if the server uses player samples for information.
+        ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
         raw*, clean*, html*: seq[string]
 
     PlayerCount* = object
@@ -92,8 +92,9 @@ type
 ]#
 
 
-# Procedure for retrieving data.
 proc refreshData*(self: Server): Future[void] {.async.} =
+    ## Connect to the API and load the data related to the given Minecraft server into the `Server` object.
+
     let client = newAsyncHttpClient()
     let platform = if self.platform == Platform.JAVA: "2/" else: "bedrock/2/"
 
@@ -110,8 +111,9 @@ proc refreshData*(self: Server): Future[void] {.async.} =
     else:
         self.data = some(data)
 
-# Procedure for retrieving the desired data using a key.
 proc retrieveData(self: Server, key: string): JsonNode =
+    ## Internal procedure for retrieving the data requested through the given key and returning it as a `JsonNode` object.
+
     if not self.data.isSome:
         raise NotInitializedError.newException("You did not initialize the Server object using the refreshData() procedure first.")
     else:
@@ -120,15 +122,17 @@ proc retrieveData(self: Server, key: string): JsonNode =
         except KeyError:
             raise DataError.newException("Server is offline / the given server platform is invalid.")
 
-# Helper-procedure for other procs based on retrieveData() with optional string returns.
 proc retrieveOptionalStr(self: Server, key: string): Option[string] =
+    ## Internal helper procedure for other procs based on `retrieveData()` with optional string return types.
+
     try:
         return some(self.retrieveData(key).getStr())
     except DataError:
         return none(string)
 
-# Helper-procedure for help mapping plugins, mods and other procs.
 proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
+    ## Internal helper procedure for returning mapped iterations of the requested data.
+
     let
         data = self.retrieveData(key1)
         mapped = map(toSeq(data[key2]), proc(x: JsonNode): string = x.getStr())
@@ -147,20 +151,24 @@ proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
 ]#
 
 
-# Procedure for getting server status.
 proc online*(self: Server): bool =
+    ## Returns a boolean value depending on if the Minecraft server is online or not.
+
     return self.retrieveData("online").getBool()
 
-# Procedure for getting the IP address of a server.
 proc ip*(self: Server): string =
+    ## Returns the IP address of the server.
+
     return self.retrieveData("ip").getStr()
 
-# Procedure for getting the port of a server.
 proc port*(self: Server): int =
+    ## Returns the port of the server.
+
     return self.retrieveData("port").getInt()
 
-# Procedure for getting the debug values of a server.
 proc debug*(self: Server): ServerDebugValues =
+    ## Returns the debug values related to the Minecraft server.
+
     let data = self.retrieveData("debug")
 
     return ServerDebugValues(
@@ -176,40 +184,40 @@ proc debug*(self: Server): ServerDebugValues =
         apiversion: data["apiversion"].getInt()
     )
 
-# Procedure for getting the version of a server.
 proc version*(self: Server): string =
+    ## Returns the version of software used for running the Minecraft server. This can include multiple versions or additional text depending on the server.
     return self.retrieveData("version").getStr()
 
-# Procedure for getting the protocol of a server.
 proc protocol*(self: Server): Option[int] =
+    ## (Optional) Returns the protocol of the server. Only returned if `ping` is set to `True` within the debug values.
     try:
         let protocol = self.retrieveData("protocol")
         return some(protocol.getInt())
     except DataError:
         return none(int)
 
-# Procedure for getting the hostname of a server.
 proc hostname*(self: Server): Option[string] =
+    ## (If detected) Returns the hostname of the server.
     return self.retrieveOptionalStr("hostname")
 
-# Procedure for getting the software of a server.
 proc software*(self: Server): Option[string] =
+    ## (If detected) Returns the software used for the server.
     return self.retrieveOptionalStr("software")
 
-# Procedure for getting the map of a server.
 proc map*(self: Server): Option[string] =
+    ## (If detected) Returns the map name of the server.
     return self.retrieveOptionalStr("map")
 
-# Procedure for getting the gamemode of a server.
 proc gamemode*(self: Server): Option[string] =
+    ## (Bedrock-only, Optional) Returns the game mode used inside the server (Survival / Creative / Adventure).
     return self.retrieveOptionalStr("gamemode")
 
-# Procedure for getting the ID of a server.
 proc serverid*(self: Server): Option[string] =
+    ## (Bedrock-only, Optional) Returns the ID of the server.
     return self.retrieveOptionalStr("serverid")
 
-# Procedure for getting the MOTD of a server.
 proc motd*(self: Server): Option[ServerMOTD] =
+    ## (If any) Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
     try:
         let
             raw = self.returnMappedStr("motd", "raw")
@@ -227,8 +235,8 @@ proc motd*(self: Server): Option[ServerMOTD] =
     except DataError:
         return none(ServerMOTD)
 
-# Procedure for getting the plugins of a server.
 proc plugins*(self: Server): Option[ServerPlugins] =
+    ## (If detected) Returns a `ServerPlugins` object representing the plugins used on the server.
     try:
         let
             names = self.returnMappedStr("plugins", "names")
@@ -244,8 +252,8 @@ proc plugins*(self: Server): Option[ServerPlugins] =
     except DataError:
         return none(ServerPlugins)
 
-# Procedure for getting the mods of a server.
 proc mods*(self: Server): Option[ServerMods] =
+    ## (If detected) Returns a `ServerMods` object representing the mods currently installed on the server.
     try:
         let
             names = self.returnMappedStr("mods", "names")
@@ -261,8 +269,8 @@ proc mods*(self: Server): Option[ServerMods] =
     except DataError:
         return none(ServerMods)
 
-# Procedure for getting the info attribute of a server.
 proc info*(self: Server): Option[ServerInfo] =
+    ## (Optional) Returns a `ServerInfo` object representing some extra bits of information related to the server.
     try:
         let
             raw = self.returnMappedStr("info", "raw")
@@ -281,6 +289,7 @@ proc info*(self: Server): Option[ServerInfo] =
         return none(ServerInfo)
 
 proc playerCount*(self: Server): Option[PlayerCount] =
+    ## (Optional) Returns a `PlayerCount` object representing the total amount of active players (and the maximum player capacity) of the server.
     try:
         let
             count = self.retrieveData("players")
