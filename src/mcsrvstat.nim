@@ -136,7 +136,7 @@ proc run*(): Future[void] {.async.} =
         else:
             discard
 
-        await sleepAsync(10)
+        await sleepAsync(30)
 
 
 # Run the program.

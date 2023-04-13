@@ -45,7 +45,7 @@ type
         ## Represents an object reference of a Minecraft server. You will primarily use this object to interact with the API.
         address*: string
         platform*: Platform
-        data*: Option[JsonNode]
+        data: Option[JsonNode]
 
     ServerDebugValues* = object
         ## Represents the debug values related to a Minecraft server.
