@@ -82,6 +82,8 @@ type
     NotInitializedError* = object of KeyError  ## Raised when the data required is missing from an instance of the `Server` object. This typically happens when `Server.refreshData()` has not been executed anywhere before interacting with the package.
     DataError* = object of KeyError  ## An internal exception primarily related to the library itself. Raised when the given key for accessing a particular data is not found.
     ConnectionError* = object of HttpRequestError  ## Raised when an attempt to connect with the API has failed. This mainly happens when the user passes an incorrect IP address.
+    QueryError* = object of DataError  ## Raised when a particular part of the data could not be queried properly depending on the server platforms and other factors.
+    PlayerNotFoundError* = object of DataError  ## Raised when a player could not be found within the list of online players.
 
 
 #[
@@ -309,7 +311,7 @@ proc playerCount*(self: Server): Option[PlayerCount] =
         return none(PlayerCount)
 
 proc getPlayers*(self: Server): Option[seq[Player]] =
-    ## (Optional) Returns the data associated with a player through a `Player` object.
+    ## (Query-dependant, Optional) Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     
     try:
         let data = self.retrieveData("players")
@@ -325,5 +327,33 @@ proc getPlayers*(self: Server): Option[seq[Player]] =
 
         return some(players)
 
+    except KeyError:
+        raise QueryError.newException("Could not query for server players list.")
+
     except DataError:
         return none(seq[Player])
+
+proc getPlayerByName*(self: Server, name: string): Option[Player] =
+    ## (Query-dependant, Optional) Returns the data associated with a player through a `Player` object.
+    
+    try:
+        let
+            data = self.retrieveData("players")
+            players = data["uuid"]
+            uuid = players{name}.getStr()
+
+        if uuid != "":
+            return some(
+                Player(
+                    name: name,
+                    uuid: uuid
+                )
+            )
+        else:
+            raise PlayerNotFoundError.newException(fmt"Player '{name}' could not be found online.")
+
+    except KeyError:
+        raise QueryError.newException("Could not query for server players list.")
+
+    except DataError:
+        return none(Player)
