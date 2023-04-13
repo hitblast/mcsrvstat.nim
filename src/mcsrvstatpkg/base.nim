@@ -72,6 +72,10 @@ type
         ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
         online*, max*: int
 
+    Player* = object
+        ## Represents a player of a Minecraft server.
+        name*, uuid*: string
+
 
 # Custom exception objects for handling data-related errors.
 type
@@ -102,9 +106,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
             fmt"https://api.mcsrvstat.us/{platform}{self.address}"))
 
     if (
-        data["debug"].hasKey("error") and
-        data["debug"]["error"].hasKey("ping") and
-        data["debug"]["error"]["ping"].getStr() == "No address to query"
+        data["debug"]{"error"}{"ping"}.getStr() == "No address to query"
     ):
         raise ConnectionError.newException("Make sure you have passed the correct IP address for the server.")
 
@@ -120,7 +122,7 @@ proc retrieveData(self: Server, key: string): JsonNode =
         try:
             return self.data.get()[key]
         except KeyError:
-            raise DataError.newException("Server is offline / the given server platform is invalid.")
+            raise DataError.newException("Key invalid / offline / bad server IP.")
 
 proc retrieveOptionalStr(self: Server, key: string): Option[string] =
     ## Internal helper procedure for other procs based on `retrieveData()` with optional string return types.
@@ -305,3 +307,23 @@ proc playerCount*(self: Server): Option[PlayerCount] =
 
     except DataError:
         return none(PlayerCount)
+
+proc getPlayers*(self: Server): Option[seq[Player]] =
+    ## (Optional) Returns the data associated with a player through a `Player` object.
+    
+    try:
+        let data = self.retrieveData("players")
+        var players: seq[Player]
+
+        for player in data["uuid"]:
+            players.add(
+                Player(
+                    name: player["name"].getStr(),
+                    uuid: player["uuid"].getStr()
+                )
+            )
+
+        return some(players)
+
+    except DataError:
+        return none(seq[Player])
