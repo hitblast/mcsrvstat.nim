@@ -36,46 +36,39 @@ import std/[
 
 # Type declarations.
 type
-    Platform* {.pure.} = enum
-        ## Represents the platform (or edition) of a Minecraft server.
+    Platform* {.pure.} = enum  ## Represents the platform (or edition) of a Minecraft server.
         JAVA
         BEDROCK
 
-    Server* = ref object
-        ## Represents an object reference of a Minecraft server. You will primarily use this object to interact with the API.
+    Server* = ref object  ## Represents an object reference of a Minecraft server. You will primarily use this object to interact with the API.
         address*: string
         platform*: Platform
         data: Option[JsonNode]
         iconData: string
 
-    Icon* = ref object
-        ## Represents the icon of a Minecraft server.
+    Icon* = ref object  ## Represents the icon of a Minecraft server.
         base64: string
 
-    ServerDebugValues* = object
-        ## Represents the debug values related to a Minecraft server.
+    ServerDebugValues* = object  ## Represents the debug values related to a Minecraft server.
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
-    Construct3Attr = object
-        ## Constructor object for child objects with the following attributes: raw, clean, html
+    ServerMOTD* = object  ## Represents the MOTD (Message of The Day) of a Minecraft server.
         raw*, clean*, html*: seq[string]
 
-    Construct2Attr = object
-        ## Constructor object for child objects with the following attributes: names, raw
+    ServerInfo* = object  ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
+        raw*, clean*, html*: seq[string]
+
+    ServerPlugins* = object  ## Represents the plugins used on a Minecraft server.
         names*, raw*: seq[string]
 
-    ServerMOTD* = ref Construct3Attr  ## Represents the MOTD (Message of The Day) of a Minecraft server.
-    ServerInfo* = ref Construct3Attr  ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
-    ServerPlugins* = ref Construct2Attr  ## Represents the plugins used on a Minecraft server.
-    ServerMods* = ref Construct2Attr  ## Represents the mods installed on a Minecraft server.
+    ServerMods* = object  ## Represents the mods installed on a Minecraft server.
+        names*, raw*: seq[string]
 
-    PlayerCount* = object
-        ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
+    PlayerCount* = object  ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
         online*, max*: int
 
-    Player* = object
-        ## Represents a player of a Minecraft server.
+    Player* = object  ## Represents a player of a Minecraft server.
         name*, uuid*: string
 
 
