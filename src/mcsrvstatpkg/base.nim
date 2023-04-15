@@ -374,6 +374,6 @@ proc icon*(self: Server): Icon =
 
 proc save*(self: Icon, filename: string): void =
     ## Writes the icon of a server into the local drive with the given file name.
-    ## (Note: Tou don't need to provide any extensions, the program automatically saves them in a `.png` format!)
+    ## (Note: You don't need to provide any extensions, the program automatically saves them in a `.png` format!)
 
     writeFile(fmt"{filename}.png", self.base64)
