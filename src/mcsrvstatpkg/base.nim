@@ -49,6 +49,7 @@ type
         iconData: string
 
     Icon* = ref object
+        ## Represents the icon of a Minecraft server.
         base64: string
 
     ServerDebugValues* = object
@@ -56,21 +57,18 @@ type
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
-    ServerMOTD* = object
-        ## Represents the MOTD (Message of The Day) of a Minecraft server.
+    Construct3Attr = object
+        ## Constructor object for child objects with the following attributes: raw, clean, html
         raw*, clean*, html*: seq[string]
 
-    ServerPlugins* = object
-        ## Represents the plugins used on a Minecraft server.
+    Construct2Attr = object
+        ## Constructor object for child objects with the following attributes: names, raw
         names*, raw*: seq[string]
 
-    ServerMods* = object
-        ## Represents the mods installed on a Minecraft server.
-        names*, raw*: seq[string]
-
-    ServerInfo* = object
-        ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
-        raw*, clean*, html*: seq[string]
+    ServerMOTD* = ref Construct3Attr  ## Represents the MOTD (Message of The Day) of a Minecraft server.
+    ServerInfo* = ref Construct3Attr  ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
+    ServerPlugins* = ref Construct2Attr  ## Represents the plugins used on a Minecraft server.
+    ServerMods* = ref Construct2Attr  ## Represents the mods installed on a Minecraft server.
 
     PlayerCount* = object
         ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
@@ -375,6 +373,7 @@ proc icon*(self: Server): Icon =
     )
 
 proc save*(self: Icon, filename: string): void =
-    ## Saves the server icon with the given file name.
+    ## Writes the icon of a server into the local drive with the given file name.
+    ## (Note: Tou don't need to provide any extensions, the program automatically saves them in a `.png` format!)
 
     writeFile(fmt"{filename}.png", self.base64)
