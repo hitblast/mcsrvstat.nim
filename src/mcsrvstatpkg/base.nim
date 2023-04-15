@@ -46,6 +46,7 @@ type
         address*: string
         platform*: Platform
         data: Option[JsonNode]
+        iconData: string
 
     ServerDebugValues* = object
         ## Represents the debug values related to a Minecraft server.
@@ -114,6 +115,9 @@ proc refreshData*(self: Server): Future[void] {.async.} =
 
     else:
         self.data = some(data)
+        self.iconData = await client.getContent(fmt"https://api.mcsrvstat.us/icon/{self.address}")
+
+        client.close()
 
 proc retrieveData(self: Server, key: string): JsonNode =
     ## Internal procedure for retrieving the data requested through the given key and returning it as a `JsonNode` object.
@@ -310,8 +314,8 @@ proc playerCount*(self: Server): Option[PlayerCount] =
     except DataError:
         return none(PlayerCount)
 
-proc getPlayers*(self: Server): Option[seq[Player]] =
-    ## (Query-dependant, Optional) Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
+proc getPlayers*(self: Server): seq[Player] =
+    ## (Query-dependant) Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     
     try:
         let data = self.retrieveData("players")
@@ -325,16 +329,13 @@ proc getPlayers*(self: Server): Option[seq[Player]] =
                 )
             )
 
-        return some(players)
+        return players
 
-    except KeyError:
+    except KeyError, DataError:
         raise QueryError.newException("Could not query for server players list.")
 
-    except DataError:
-        return none(seq[Player])
-
-proc getPlayerByName*(self: Server, name: string): Option[Player] =
-    ## (Query-dependant, Optional) Returns the data associated with a player through a `Player` object.
+proc getPlayerByName*(self: Server, name: string): Player =
+    ## (Query-dependant) Returns the data associated with a player through a `Player` object.
     
     try:
         let
@@ -343,17 +344,13 @@ proc getPlayerByName*(self: Server, name: string): Option[Player] =
             uuid = players{name}.getStr()
 
         if uuid != "":
-            return some(
-                Player(
-                    name: name,
-                    uuid: uuid
-                )
+            return Player(
+                name: name,
+                uuid: uuid
             )
+
         else:
             raise PlayerNotFoundError.newException(fmt"Player '{name}' could not be found online.")
 
-    except KeyError:
+    except KeyError, DataError:
         raise QueryError.newException("Could not query for server players list.")
-
-    except DataError:
-        return none(Player)
