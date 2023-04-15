@@ -377,4 +377,4 @@ proc icon*(self: Server): Icon =
 proc save*(self: Icon, filename: string): void =
     ## Saves the server icon with the given file name.
 
-    writeFile(filename, self.base64)
+    writeFile(fmt"{filename}.png", self.base64)
