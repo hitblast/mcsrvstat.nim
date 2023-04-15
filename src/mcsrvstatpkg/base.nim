@@ -48,6 +48,9 @@ type
         data: Option[JsonNode]
         iconData: string
 
+    Icon* = ref object
+        base64: string
+
     ServerDebugValues* = object
         ## Represents the debug values related to a Minecraft server.
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
@@ -354,3 +357,24 @@ proc getPlayerByName*(self: Server, name: string): Player =
 
     except KeyError, DataError:
         raise QueryError.newException("Could not query for server players list.")
+
+
+#[
+    This is an additional part for the server icon endpoint of the API.
+    The code below is written in conjunction with both:
+        1. The Server object, and
+        2. The Icon object.
+]#
+
+
+proc icon*(self: Server): Icon =
+    ## Returns an `Icon` object containing the icon of the Minecraft server.
+    
+    return Icon(
+        base64: self.iconData
+    )
+
+proc save*(self: Icon, filename: string): void =
+    ## Saves the server icon with the given file name.
+
+    writeFile(filename, self.base64)
