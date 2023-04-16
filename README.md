@@ -17,7 +17,7 @@
 - [Usage](#⚡-usage)
     - [as a CLI application](#as-a-cli-application)
     - [as a Nim library](#as-a-nim-library)
-- [Building]()
+- [Building](#🔨-building)
 - [Contributing]()
 - [Similar Projects]()
 - [License]()
@@ -61,3 +61,38 @@ $ mcsrvstat mco.mineplex.com --bedrock
 ```
 
 ### ... as a Nim library
+
+Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using [Nimble (redirect to Installations section)](#📦-installation) and then you're done setting up. Here is some basic code for you to get started with:
+
+```nim
+# Imports.
+import std/[
+    asyncdispatch,
+    strformat
+]
+import mcsrvstatpkg/base
+
+# Defining a Server object instance. This represents a Minecraft server.
+let server = Server(
+    address: "hypixel.net",
+    platform: Platform.JAVA  # The Platform enum is used to define the edition of the server.
+)
+
+# Making a main() async procedure to run our code.
+proc main() {.async.} =
+    await server.refreshData()  # Loads the server data into memory.
+
+    if server.online:
+        echo fmt"Server running on: {server.ip} (port {server.port})"
+    else:
+        echo "Server is offline!"
+
+# Running it.
+waitFor main()
+```
+
+For more procedures and use cases, you can visit the [official documentation](https://hitblast.github.io/mcsrvstat.nim) and view the different types, examples and procs.
+
+<br>
+
+## 🔨 Building
