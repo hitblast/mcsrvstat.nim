@@ -46,7 +46,7 @@ This package, AKA mcsrvstat.nim, is a [hybrid package](https://github.com/nim-la
 
 ### ... as a CLI application
 
-After installing the package from [the Installation section](#installation) section, the binary for mcsrvstat.nim should be in your `PATH` depending on how you've installed it. This means, a new `mcsrvstat` command will be added to your shell environment. Simply run it using the following commands:
+After installing the package [(see this section)](#installation), the binary for mcsrvstat.nim should be in your `PATH` variable depending on how you've installed it. This means, a new `mcsrvstat` command will be added to your shell environment. Simply run it using the following command snippets:
 
 ```bash
 # The default help command.
@@ -61,7 +61,7 @@ $ mcsrvstat mco.mineplex.com --bedrock
 
 ### ... as a Nim library
 
-Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using [Nimble (redirect to Installations section)](#📦-installation) and then you're done setting up. Here is some basic code for you to get started with:
+Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using [Nimble (redirect to Installations section)](#📦-installation) and then you're done. Here is some basic code for you to get started with:
 
 ```nim
 # Imports.
@@ -90,7 +90,7 @@ proc main() {.async.} =
 waitFor main()
 ```
 
-For more procedures and use cases, you can visit the [official documentation](https://hitblast.github.io/mcsrvstat.nim) and view the different types, examples and procs.
+For more use cases and detailed explanation, you can visit the [official documentation](https://hitblast.github.io/mcsrvstat.nim) and view the different types, examples and procedures. It's frequently updated with the package itself so any new features will directly modify the documentation alongside!
 
 <br>
 
@@ -119,7 +119,7 @@ The various third-party libraries and dependancies used for developing this proj
 
 ## ✨ Check out my other similar projects!
 
-The [api.mcsrvstat.py](https://github.com/hitblast/api.mcsrvstat.py) is another asynchronous wrapper for the very same Minecraft Server Status API, but instead it's implemented in [Python](https://python.org). If you like this project and by chance if you're also a Python developer, then hopefully you'll have fun tinkering with api.mcsrvstat.py as well.
+The [api.mcsrvstat.py](https://github.com/hitblast/api.mcsrvstat.py) library is another asynchronous wrapper for the very same Minecraft Server Status API, but instead it's implemented in [Python](https://python.org). If you like this project and by chance if you're also a Python developer, then hopefully you'll have fun tinkering with api.mcsrvstat.py as well.
 
 <br>
 
