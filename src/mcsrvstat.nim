@@ -65,7 +65,7 @@ proc run*(): Future[void] {.async.} =
         quit(1)
 
     except ConnectionError:
-        echo("Make sure you've passed the correct IP for the server.")
+        echo "Make sure you've passed the correct IP for the server."
         quit(1)
 
     # Initialize an instance of illwave and run the TUI if the code above succeeds.
@@ -151,5 +151,11 @@ proc run*(): Future[void] {.async.} =
 when isMainModule:
     try:
         waitFor run()
+
+    except DataError:
+        echo "Make sure you've passed the proper platform for the server."
+        quit(1)
+
     except IOError:
-        echo "Cannot run mcsrvstat.nim since proper SSL support couldn't be found."
+        echo "Can't run mcsrvstat.nim since proper support for SSL couldn't be found."
+        quit(1)
