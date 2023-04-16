@@ -1,8 +1,11 @@
-name: Release
+name: Build
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -119,28 +122,3 @@ jobs:
         name: |
           binary-win-x64
           dlls
-
-
-  release:
-    name: ${{ matrix.artifact_mid }}
-    
-    runs-on: ubuntu-latest
-    needs: [build, package-windows]
-
-    strategy:
-      matrix:
-        artifact_mid: [package-linux-x64, package-darwin-x64, package-win-x64]
-
-    steps:
-    - name: Download Linux artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ matrix.artifact_mid }}
-
-    - name: Upload to release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ${{ matrix.artifact_mid }}.zip
-        tag: ${{ github.ref }}
-        overwrite: true
