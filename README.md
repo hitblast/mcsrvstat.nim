@@ -16,31 +16,40 @@
 - [Installation](#📦-installation)
 - [Usage](#⚡-usage)
     - [as a CLI application](#as-a-cli-application)
-    - [as a Nim library]()
+    - [as a Nim library](#as-a-nim-library)
 - [Building]()
 - [Contributing]()
 - [Similar Projects]()
 - [License]()
 
+<br>
+
 ## 📦 Installation
 
-- You can easily install this package using [Nimble]() for using it as both a command-line application and a Nim package. 
+1. using [Nimble](https://github.com/nim-lang/nimble):
 
 ```bash
 # requires Nim v1.6 or greater
 $ nimble install mcsrvstat.nim
 ```
 
+2. (upcoming) using [Homebrew](https://brew.sh):
+
+```bash
+$ brew install mcsrvstat.nim
+```
+
+<br>
+
 ## ⚡ Usage
 
-This package, AKA mcsrvstat.nim, is a [hybrid package](). Meaning that it can be used as both a Nim library and a standalone CLI application inside your terminal.
+This package, AKA mcsrvstat.nim, is a [hybrid package](https://github.com/nim-lang/nimble#hybrids). Meaning that it can be used as both a Nim library and a standalone CLI application inside your terminal. <br>
 
 ### ... as a CLI application
 
-After installing the package from [the Installation section](#installation) section, the binary for mcsrvstat.nim should be in your PATH depending on how you've installed it. This means, a new `mcsrvstat` command will be added to your shell environment. Simply run it using the following commands:
+After installing the package from [the Installation section](#installation) section, the binary for mcsrvstat.nim should be in your `PATH` depending on how you've installed it. This means, a new `mcsrvstat` command will be added to your shell environment. Simply run it using the following commands:
 
 ```bash
-
 # The default help command.
 $ mcsrvstat --help  # -h also works
 
@@ -50,3 +59,5 @@ $ mcsrvstat hypixel.net
 # Fetching a Minecraft: Bedrock Edition server.
 $ mcsrvstat mco.mineplex.com --bedrock
 ```
+
+### ... as a Nim library
