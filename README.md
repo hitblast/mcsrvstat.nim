@@ -2,7 +2,9 @@
 
 # <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/nim/nim.png" height="35px"/> mcsrvstat.nim
 
-A hybrid and asynchronous Nim wrapper for the [Minecraft Server Status API](https://mcsrvstat.us/).
+### A hybrid and asynchronous Nim wrapper for the [Minecraft Server Status API](https://mcsrvstat.us/).
+
+<img src="static/README.md" alt="Demo Terminal Image"> <br>
 
 | Checks | Status |
 |:---|---:|
