@@ -18,8 +18,7 @@
     - [as a CLI application](#as-a-cli-application)
     - [as a Nim library](#as-a-nim-library)
 - [Building](#🔨-building)
-- [Contributing]()
-- [Similar Projects]()
+- [Similar Projects](#✨-check-out-my-other-similar-projects)
 - [License]()
 
 <br>
@@ -107,9 +106,23 @@ $ nimble build --accept
 $ nimble -d:release build --accept
 ```
 
-The dependencies used for developing this project are:
+The various third-party libraries and dependancies used for developing this project are mentioned below:
 
-1. The [argparse (>= 4.0)](https://nimble.directory/pkg/argparse) library, for parsing command-line arguments for the CLI binary.
-2. The [illwill (>= 0.3)](https://nimble.directory/pkg/illwill) library, for the terminal user interface (TUI).
+- Internal dependencies:
+    1. The [argparse (>= 4.0)](https://nimble.directory/pkg/argparse) library, for parsing command-line arguments for the CLI binary.
+    2. The [illwill (>= 0.3)](https://nimble.directory/pkg/illwill) library, for the terminal user interface (TUI).
+
+- External dependencies (noted in the [root .nimble](https://github.com/hitblast/mcsrvstat.nim/blob/main/mcsrvstat.nimble) file):
+    1. [OpenSSL](https://www.openssl.org), for connection and making API calls.
 
 <br>
+
+## ✨ Check out my other similar projects!
+
+The [api.mcsrvstat.py](https://github.com/hitblast/api.mcsrvstat.py) is another asynchronous wrapper for the very same Minecraft Server Status API, but instead it's implemented in [Python](https://python.org). If you like this project and by chance if you're also a Python developer, then hopefully you'll have fun tinkering with api.mcsrvstat.py as well.
+
+<br>
+
+## 🔖 License
+
+This project is licensed under the [MIT License](https://github.com/hitblast/mcsrvstat.nim/blob/main/LICENSE).
