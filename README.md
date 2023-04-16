@@ -19,7 +19,7 @@
     - [as a Nim library](#as-a-nim-library)
 - [Building](#🔨-building)
 - [Similar Projects](#✨-check-out-my-other-similar-projects)
-- [License]()
+- [License](#🔖-license)
 
 <br>
 
@@ -32,7 +32,7 @@
 $ nimble install mcsrvstat.nim
 ```
 
-- (upcoming) using [Homebrew](https://brew.sh):
+- or, using [Homebrew](https://brew.sh):
 
 ```bash
 $ brew install mcsrvstat.nim
