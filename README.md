@@ -7,6 +7,17 @@
 [![Build](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml)
 [![Deploy to Pages](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml)
 
-<img src="static/demo.png" alt="Demo Terminal Image">
+<img src="https://github.com/hitblast/mcsrvstat.nim/blob/main/static/demo.png" alt="Demo Terminal Image">
 
 </div>
+
+## Table of Contents
+
+- [Installation]()
+- [Usage]()
+    - [as a CLI application]()
+    - [as a Nim package]()
+- [Building]()
+- [Contributing]()
+- [Similar Projects]()
+- [License]()
