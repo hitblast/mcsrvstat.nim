@@ -31,9 +31,7 @@ import std/[
     strformat,
     strutils
 ]
-
-import illwill
-import therapist
+import illwill, argparse
 
 import mcsrvstatpkg/base
 
@@ -41,26 +39,36 @@ import mcsrvstatpkg/base
 # Primary run() procedure for the hybrid package.
 proc run*(): Future[void] {.async.} =
 
-    # Terminal options for accessing the app from the command-line.
-    let spec = (
-        address: newStringArg(@["<address>"], help="The IP address of the server."),
-        bedrock: newBoolArg(@["-b", "--bedrock"], defaultVal=false, help="Flags the server as a Minecraft Bedrock server."),
-        help: newHelpArg(@["-h", "--help"], help="Show help message.")
-    )
-    spec.parseOrQuit(prolog="mcsrvstat.nim", command="search")
-
-    let server = Server(
-        address: spec.address.value,
-        platform: if spec.bedrock.value: Platform.BEDROCK else: Platform.JAVA
-    )
+    # The primary command-line parser.
+    var
+        parser = newParser:
+            help("A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API.")
+            flag("-b", "--bedrock", help="Flags the server as a Minecraft: Bedrock Edition server.")
+            arg("address", help="The address of the Minecraft server.")
+        server = Server()
 
     try:
+        let opts = parser.parse()
+        server = Server(
+            address: opts.address,
+            platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA
+        )
         await server.refreshData()
+
+    except ShortCircuit as err:
+        if err.flag == "argparse_help":
+            echo err.help
+            quit(1)
+
+    except UsageError:
+        stderr.writeLine getCurrentExceptionMsg()
+        quit(1)
+
     except ConnectionError:
         echo("Make sure you've passed the correct IP for the server.")
         quit(1)
 
-    # And if it succeeds, initialize an instance of illwave and run the app.
+    # Initialize an instance of illwave and run the TUI if the code above succeeds.
     # This includes a cursor-less window, so an exit procedure is also required.
     proc exitProc() {.noconv.} =
         illwillDeinit()
