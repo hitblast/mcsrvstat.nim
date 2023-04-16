@@ -96,3 +96,20 @@ For more procedures and use cases, you can visit the [official documentation](ht
 <br>
 
 ## 🔨 Building
+
+The default build configuration (development) for this project is kept in the root [config.nims](https://github.com/hitblast/mcsrvstat.nim/blob/main/config.nims) file. You can easily build binaries using the following commands:
+
+```bash
+# development
+$ nimble build --accept
+
+# release
+$ nimble -d:release build --accept
+```
+
+The dependencies used for developing this project are:
+
+1. The [argparse (>= 4.0)](https://nimble.directory/pkg/argparse) library, for parsing command-line arguments for the CLI binary.
+2. The [illwill (>= 0.3)](https://nimble.directory/pkg/illwill) library, for the terminal user interface (TUI).
+
+<br>
