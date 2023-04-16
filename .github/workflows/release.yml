@@ -122,25 +122,25 @@ jobs:
 
 
   release:
-    name: Add Packages to Release
+    name: ${{ matrix.artifact_mid }}
     
     runs-on: ubuntu-latest
     needs: [build, package-windows]
 
     strategy:
       matrix:
-        artifact_mid: [linux, darwin, win]
+        artifact_mid: [package-linux-x64, package-darwin-x64, package-win-x64]
 
     steps:
     - name: Download Linux artifact
       uses: actions/download-artifact@v3
       with:
-        name: package-${{ matrix.artifact_mid }}-x64
+        name: ${{ matrix.artifact_mid }}
 
     - name: Upload to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: package-${{ matrix.artifact_mid }}-x64
+        file: ${{ matrix.artifact_mid }}.zip
         tag: ${{ github.ref }}
         overwrite: true
