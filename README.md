@@ -63,7 +63,7 @@ $ mcsrvstat mco.mineplex.com --bedrock
 
 ### ... as a Nim library
 
-Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using [Nimble (redirect to Installations section)](#📦-installation) and then you're done. Here is some basic code for you to get started with:
+Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using Nimble [(see this section)](#📦-installation) and then you're done. Here is some basic code for you to get started with:
 
 ```nim
 # Imports.
@@ -115,7 +115,7 @@ The various third-party libraries and dependancies used for developing this proj
     2. The [illwill (>= 0.3)](https://nimble.directory/pkg/illwill) library, for the terminal user interface (TUI).
 
 - External dependencies (noted in the [root .nimble](https://github.com/hitblast/mcsrvstat.nim/blob/main/mcsrvstat.nimble) file):
-    1. [OpenSSL](https://www.openssl.org), for connection and making API calls.
+    1. [OpenSSL](https://www.openssl.org) for connection and making API calls.
 
 <br>
 
