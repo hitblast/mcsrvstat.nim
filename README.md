@@ -4,7 +4,7 @@
 
 ### A hybrid and asynchronous Nim wrapper for the [Minecraft Server Status API](https://mcsrvstat.us/).
 
-<img src="static/README.md" alt="Demo Terminal Image"> <br>
+<img src="static/demo.png" alt="Demo Terminal Image"> <br>
 
 | Checks | Status |
 |:---|---:|
