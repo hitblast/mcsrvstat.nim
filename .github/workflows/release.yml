@@ -1,10 +1,8 @@
-name: Build
+name: Release
 
 on:
-  push:
-    branches: main
-  pull_request:
-    branches: main
+  release:
+    types: [published]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -121,3 +119,28 @@ jobs:
         name: |
           binary-win-x64
           dlls
+
+
+  release:
+    name: Add Packages to Release
+    
+    runs-on: ubuntu-latest
+    needs: [build, package-windows]
+
+    strategy:
+      matrix:
+        artifact_mid: [linux, darwin, win]
+
+    steps:
+    - name: Download Linux artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: package-${{ matrix.artifact_mid }}-x64
+
+    - name: Upload to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: package-${{ matrix.artifact_mid }}-x64
+        tag: ${{ github.ref }}
+        overwrite: true

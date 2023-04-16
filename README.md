@@ -6,7 +6,7 @@ A hybrid and asynchronous Nim wrapper for the [Minecraft Server Status API](http
 
 | Checks | Status |
 |:---|---:|
-| Build workflow | [![Builds](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml) |
 | Documentation | [![Deploy to Pages](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/pages.yml) |
+| Release Workflow | [![Release](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/release.yml/badge.svg)](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/release.yml) |
 
 </div>
