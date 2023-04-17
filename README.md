@@ -35,7 +35,11 @@ $ nimble install mcsrvstat.nim
 - or, using [Homebrew](https://brew.sh):
 
 ```bash
-$ brew install mcsrvstat.nim
+# tapping the formula
+$ brew tap hitblast/mcsrvstat
+
+# installing it
+$ brew install mcsrvstat
 ```
 
 - or, you can manually download the packages required from the latest release in the [Releases](https://github.com/hitblast/mcsrvstat.nim/releases) section. The [build artifacts](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml) are also stored for you to download as well.
