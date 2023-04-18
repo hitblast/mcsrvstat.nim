@@ -15,8 +15,8 @@
 
 - [Installation](#-installation)
 - [Usage](#-usage)
-    - [as a CLI application](#as-a-cli-application)
-    - [as a Nim library](#as-a-nim-library)
+    - [as a CLI application](#-as-a-cli-application)
+    - [as a Nim library](#-as-a-nim-library)
 - [Building](#-building)
 - [Similar Projects](#-check-out-my-other-similar-projects)
 - [License](#-license)
