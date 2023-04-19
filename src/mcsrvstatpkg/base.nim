@@ -46,7 +46,7 @@ type
         data: Option[JsonNode]
         iconData: string
 
-    Icon* = ref object  ## Represents the icon of a Minecraft server.
+    Icon* = object  ## Represents the icon of a Minecraft server.
         base64: string
 
     ServerDebugValues* = object  ## Represents the debug values related to a Minecraft server.

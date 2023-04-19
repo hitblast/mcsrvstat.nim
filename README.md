@@ -80,15 +80,19 @@ import mcsrvstatpkg/base
 # Defining a Server object instance. This represents a Minecraft server.
 let server = Server(
     address: "hypixel.net",
-    platform: Platform.JAVA  # The Platform enum is used to define the edition of the server.
+    platform: JAVA  # can also be BEDROCK (derives from the Platform enum, see documentation to learn more)
 )
 
-# Making a main() async procedure to run our code.
+# The primary procedure.
 proc main() {.async.} =
     await server.refreshData()  # Loads the server data into memory.
 
     if server.online:
         echo fmt"Server running on: {server.ip} (port {server.port})"
+
+        # Save the icon of the server.
+        server.icon.save("filename")
+
     else:
         echo "Server is offline!"
 
