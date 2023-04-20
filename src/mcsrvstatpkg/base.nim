@@ -30,7 +30,8 @@ import std/[
     json,
     options,
     sequtils,
-    strformat
+    strformat,
+    strutils
 ]
 
 
@@ -365,8 +366,9 @@ proc icon*(self: Server): Icon =
         base64: self.iconData
     )
 
-proc save*(self: Icon, filename: string): void =
+proc save*(self: Icon, fileName: var string): void =
     ## Writes the icon of a server into the local drive with the given file name.
-    ## (Note: You don't need to provide any extensions, the program automatically saves them in a `.png` format!)
+    ## The image is always saved as a `PNG` image.
 
-    writeFile(fmt"{filename}.png", self.base64)
+    fileName.removeSuffix(".png")
+    writeFile(fmt"{fileName}.png", self.base64)
