@@ -70,12 +70,8 @@ proc run*(): Future[void] {.async.} =
 
     # Initialize an instance of illwave and run the TUI if the code above succeeds.
     # This includes a cursor-less window, so an exit procedure is also required.
-    proc exitProc() {.noconv.} =
-        illwillDeinit()
-        showCursor()
-        quit(0)
-
     illwillInit(fullscreen=true)
+
     var
         tb = newTerminalBuffer(terminalWidth(), terminalHeight())
         yCoord = 14
@@ -135,6 +131,12 @@ proc run*(): Future[void] {.async.} =
         tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
 
     # Finally, display the entire thing.
+    # This also includes checking for keypress events in order for the user to quit the interface.
+    proc exitProc() {.noconv.} =
+        illwillDeinit()
+        showCursor()
+        quit(0)
+
     while true:
         tb.display()
 
@@ -148,6 +150,7 @@ proc run*(): Future[void] {.async.} =
 
 
 # Run the program.
+# Also handle some of the root exceptions as needed.
 when isMainModule:
     try:
         waitFor run()
