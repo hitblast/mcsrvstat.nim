@@ -20,13 +20,13 @@ jobs:
         nimversion:
           - binary:stable
 
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest-xl, windows-latest]
         include:
           - os: ubuntu-latest
             file: mcsrvstat
             artifact: package-linux-x64
 
-          - os: macos-latest
+          - os: macos-latest-xl
             file: mcsrvstat
             artifact: package-darwin-x64
 
