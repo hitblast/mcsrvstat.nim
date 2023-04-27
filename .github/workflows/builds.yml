@@ -20,7 +20,7 @@ jobs:
         nimversion:
           - binary:stable
 
-        os: [ubuntu-latest, macos-latest-xl, windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
             file: mcsrvstat
