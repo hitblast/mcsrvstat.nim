@@ -49,7 +49,7 @@ jobs:
       run: nimble check
 
     - name: Build
-      run: nimble build -d:release --accept
+      run: nimble release
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
