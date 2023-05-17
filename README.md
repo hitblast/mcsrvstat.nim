@@ -106,14 +106,11 @@ For more use cases and detailed explanation, you can visit the [official documen
 
 ## 🔨 Building
 
-The default build configuration (development) for this project is kept in the root [config.nims](https://github.com/hitblast/mcsrvstat.nim/blob/main/config.nims) file. You can easily build binaries using the following commands:
+The default build configuration (both for development and production) for this project is kept in the [mcsrvstat.nimble](https://github.com/hitblast/mcsrvstat.nim/blob/main/mcsrvstat.nimble) file. You can easily build binaries using the following command:
 
 ```bash
-# development
-$ nimble build --accept
-
-# release
-$ nimble -d:release build --accept
+# build using the built-in task
+$ nimble release
 ```
 
 The various third-party libraries and dependancies used for developing this project are mentioned below:
