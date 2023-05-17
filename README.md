@@ -67,7 +67,7 @@ $ mcsrvstat mco.mineplex.com --bedrock
 
 ### ... as a Nim library
 
-Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using Nimble [(see this section)](#📦-installation) and then you're done. Here is some basic code for you to get started with:
+Aside of the CLI binary, mcsrvstat.nim can also work as a Nim library as mentioned once before. You'll have to install the package using Nimble [(see this section)](#installation) and then you're done. Here is some basic code for you to get started with:
 
 ```nim
 # Imports.
