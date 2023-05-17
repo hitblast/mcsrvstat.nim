@@ -106,7 +106,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
     if (
         data["debug"]{"error"}{"ping"}.getStr() == "No address to query"
     ):
-        raise ConnectionError.newException("Make sure you have passed the correct IP address for the server.")
+        raise ConnectionError.newException("Incorrect server IP address passed")
 
     else:
         self.data = some(data)
@@ -118,12 +118,12 @@ proc retrieveData(self: Server, key: string): JsonNode =
     ## Internal procedure for retrieving the data requested through the given key and returning it as a `JsonNode` object.
 
     if not self.data.isSome:
-        raise NotInitializedError.newException("You did not initialize the Server object using the refreshData() procedure first.")
+        raise NotInitializedError.newException("Initialize the data with refreshData() first.")
     else:
         try:
             return self.data.get()[key]
         except KeyError:
-            raise DataError.newException("Key invalid / offline / bad server IP.")
+            raise DataError.newException("Incorrect server platform / server is offline / invalid key")
 
 proc retrieveOptionalStr(self: Server, key: string): Option[string] =
     ## Internal helper procedure for other procs based on `retrieveData()` with optional string return types.
