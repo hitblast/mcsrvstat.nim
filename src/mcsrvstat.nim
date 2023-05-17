@@ -45,7 +45,7 @@ proc run*(): Future[void] {.async.} =
             help("A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API.")
             flag("-b", "--bedrock", help="Flags the server as a Minecraft: Bedrock Edition server.")
             arg("address", help="The address of the Minecraft server.")
-        server = Server()
+        server: Server
 
     try:
         let opts = parser.parse()
