@@ -36,7 +36,7 @@ $ nimble install mcsrvstat.nim
 
 ```bash
 # tapping the formula
-$ brew tap hitblast/mcsrvstat
+$ brew tap hitblast/nimtap
 
 # installing it
 $ brew install mcsrvstat
