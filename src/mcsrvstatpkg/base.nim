@@ -37,7 +37,7 @@ import std/[
 
 # Type declarations.
 type
-    Platform* {.pure.} = enum  ## Represents the platform (or edition) of a Minecraft server.
+    Platform* {.pure.} = enum  ## Represents the platform / edition of a Minecraft server.
         JAVA
         BEDROCK
 
@@ -54,7 +54,7 @@ type
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
-    ServerMOTD* = object  ## Represents the MOTD (Message of The Day) of a Minecraft server.
+    ServerMOTD* = object  ## Represents the MOTD **(Message of The Day)** of a Minecraft server.
         raw*, clean*, html*: seq[string]
 
     ServerInfo* = object  ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
@@ -192,7 +192,7 @@ proc version*(self: Server): string =
     return self.retrieveData("version").getStr()
 
 proc protocol*(self: Server): Option[int] =
-    ## (Optional) Returns the protocol of the server. Only returned if `ping` is set to `True` within the debug values.
+    ## **(Optional)** Returns the protocol of the server. Only returned if `ping` is set to `True` within the debug values.
     try:
         let protocol = self.retrieveData("protocol")
         return some(protocol.getInt())
@@ -200,27 +200,27 @@ proc protocol*(self: Server): Option[int] =
         return none(int)
 
 proc hostname*(self: Server): Option[string] =
-    ## (If detected) Returns the hostname of the server.
+    ## **(If detected)** Returns the hostname of the server.
     return self.retrieveOptionalStr("hostname")
 
 proc software*(self: Server): Option[string] =
-    ## (If detected) Returns the software used for the server.
+    ## **(If detected)** Returns the software used for the server.
     return self.retrieveOptionalStr("software")
 
 proc map*(self: Server): Option[string] =
-    ## (If detected) Returns the map name of the server.
+    ## **(If detected)** Returns the map name of the server.
     return self.retrieveOptionalStr("map")
 
 proc gamemode*(self: Server): Option[string] =
-    ## (Bedrock-only, Optional) Returns the game mode used inside the server (Survival / Creative / Adventure).
+    ## **(Bedrock-only, Optional)** Returns the game mode used inside the server (Survival / Creative / Adventure).
     return self.retrieveOptionalStr("gamemode")
 
 proc serverid*(self: Server): Option[string] =
-    ## (Bedrock-only, Optional) Returns the ID of the server.
+    ## **(Bedrock-only, Optional)** Returns the ID of the server.
     return self.retrieveOptionalStr("serverid")
 
 proc motd*(self: Server): Option[ServerMOTD] =
-    ## (If any) Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
+    ## **(If any)** Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
     try:
         let
             raw = self.returnMappedStr("motd", "raw")
@@ -239,7 +239,7 @@ proc motd*(self: Server): Option[ServerMOTD] =
         return none(ServerMOTD)
 
 proc plugins*(self: Server): Option[ServerPlugins] =
-    ## (If detected) Returns a `ServerPlugins` object representing the plugins used on the server.
+    ## **(If detected)** Returns a `ServerPlugins` object representing the plugins used on the server.
     try:
         let
             names = self.returnMappedStr("plugins", "names")
@@ -256,7 +256,7 @@ proc plugins*(self: Server): Option[ServerPlugins] =
         return none(ServerPlugins)
 
 proc mods*(self: Server): Option[ServerMods] =
-    ## (If detected) Returns a `ServerMods` object representing the mods currently installed on the server.
+    ## **(If detected)** Returns a `ServerMods` object representing the mods currently installed on the server.
     try:
         let
             names = self.returnMappedStr("mods", "names")
@@ -273,7 +273,7 @@ proc mods*(self: Server): Option[ServerMods] =
         return none(ServerMods)
 
 proc info*(self: Server): Option[ServerInfo] =
-    ## (Optional) Returns a `ServerInfo` object representing some extra bits of information related to the server.
+    ## **(Optional)** Returns a `ServerInfo` object representing some extra bits of information related to the server.
     try:
         let
             raw = self.returnMappedStr("info", "raw")
@@ -292,7 +292,7 @@ proc info*(self: Server): Option[ServerInfo] =
         return none(ServerInfo)
 
 proc playerCount*(self: Server): Option[PlayerCount] =
-    ## (Optional) Returns a `PlayerCount` object representing the total amount of active players (and the maximum player capacity) of the server.
+    ## **(Optional)** Returns a `PlayerCount` object representing the total amount of active players (and the maximum player capacity) of the server.
     try:
         let
             count = self.retrieveData("players")
@@ -310,7 +310,7 @@ proc playerCount*(self: Server): Option[PlayerCount] =
         return none(PlayerCount)
 
 proc getPlayers*(self: Server): seq[Player] =
-    ## (Query-dependant) Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
+    ## **(Query-dependant)** Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     
     try:
         let data = self.retrieveData("players")
@@ -330,7 +330,7 @@ proc getPlayers*(self: Server): seq[Player] =
         raise QueryError.newException("Could not query for server players list.")
 
 proc getPlayerByName*(self: Server, name: string): Player =
-    ## (Query-dependant) Returns the data associated with a player through a `Player` object.
+    ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
     
     try:
         let
