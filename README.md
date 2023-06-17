@@ -25,14 +25,14 @@
 
 ## 📦 Installation
 
-- Nim (using [nimble](https://github.com/nim-lang/nimble))
+- ### Nim (using [nimble](https://github.com/nim-lang/nimble))
 
 ```bash
 # requires Nim v1.6 or greater
 $ nimble install mcsrvstat.nim
 ```
 
-- macOS (using [Homebrew](https://brew.sh))
+- ### macOS (using [Homebrew](https://brew.sh))
 
 ```bash
 # tapping the formula
@@ -42,7 +42,7 @@ $ brew tap hitblast/nimtap
 $ brew install mcsrvstat
 ```
 
-- Binary Downloads
+- ### Binary Downloads
 You can manually download the packages required from the latest release in the [Releases](https://github.com/hitblast/mcsrvstat.nim/releases) section. The [build artifacts](https://github.com/hitblast/mcsrvstat.nim/actions/workflows/builds.yml) are also stored for you to download as well.
 
 <br>
