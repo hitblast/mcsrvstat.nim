@@ -70,7 +70,14 @@ proc run*(): Future[void] {.async.} =
 
     # Initialize an instance of illwave and run the TUI if the code above succeeds.
     # This includes a cursor-less window, so an exit procedure is also required.
+    proc exitProc() {.noconv.} =
+        illwillDeinit()
+        showCursor()
+        quit(0)
+
     illwillInit(fullscreen=true)
+    setControlCHook(exitProc)
+    hideCursor()
 
     var
         tb = newTerminalBuffer(terminalWidth(), terminalHeight())
@@ -132,11 +139,6 @@ proc run*(): Future[void] {.async.} =
 
     # Finally, display the entire thing.
     # This also includes checking for keypress events in order for the user to quit the interface.
-    proc exitProc() {.noconv.} =
-        illwillDeinit()
-        showCursor()
-        quit(0)
-
     while true:
         tb.display()
 
