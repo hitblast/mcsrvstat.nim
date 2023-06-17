@@ -145,10 +145,9 @@ proc run*(): Future[void] {.async.} =
         var key = getKey()
         case key
         of Key.Escape, Key.Q: exitProc()
-        else:
-            discard
+        else: discard
 
-        await sleepAsync(30)
+        sleep(20)
 
 
 # Run the program.
