@@ -1,6 +1,6 @@
 # Package
 
-version       = "1.1.0"
+version       = "1.2.0"
 author        = "HitBlast"
 description   = "A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API."
 license       = "MIT"
