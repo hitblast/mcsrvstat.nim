@@ -51,7 +51,7 @@ type
         base64: string
 
     ServerDebugValues* = object  ## Represents the debug values related to a Minecraft server.
-        ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*: bool
+        ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*, cachehit*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
     ServerMOTD* = object  ## Represents the MOTD **(Message of The Day)** of a Minecraft server.
@@ -154,7 +154,7 @@ proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
 ]#
 
 
-proc online*(self: Server): bool =
+proc isOnline*(self: Server): bool =
     ## Returns a boolean value depending on if the Minecraft server is online or not.
 
     return self.retrieveData("online").getBool()
@@ -182,6 +182,7 @@ proc debug*(self: Server): ServerDebugValues =
         ipinsrv: data["ipinsrv"].getBool(),
         cnameinsrv: data["cnameinsrv"].getBool(),
         animatedmotd: data["animatedmotd"].getBool(),
+        cachehit: data["cachehit"].getBool(),
         cachetime: data["cachetime"].getInt(),
         cacheexpire: data["cacheexpire"].getInt(),
         apiversion: data["apiversion"].getInt()

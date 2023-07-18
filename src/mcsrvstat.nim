@@ -90,7 +90,7 @@ proc run*(): Future[void] {.async.} =
     tb.drawHorizLine(2, 38, 2, doubleStyle=true)
 
     # Basic
-    tb.write(2, 4, "Online: ", (if server.online: fgGreen else: fgRed), $server.online, fgWhite)
+    tb.write(2, 4, "Online: ", (if server.isOnline: fgGreen else: fgRed), $server.isOnline, fgWhite)
     tb.write(2, 5, "IP: ", server.ip)
     tb.write(2, 6, "Port: ", $server.port)
 
@@ -126,13 +126,14 @@ proc run*(): Future[void] {.async.} =
             yCoord += 1
 
     for (name, value) in [
-        ("Ping", server.debug.ping),
-        ("Query", server.debug.query),
-        ("Srv", server.debug.srv),
-        ("Query Mismatch", server.debug.querymismatch),
-        ("IP in srv", server.debug.ipinsrv),
-        ("CNAME in srv", server.debug.cnameinsrv),
-        ("Animated MOTD", server.debug.animatedmotd),
+        ("ping", server.debug.ping),
+        ("query", server.debug.query),
+        ("srv", server.debug.srv),
+        ("querymismatch", server.debug.querymismatch),
+        ("ipinsrv", server.debug.ipinsrv),
+        ("cnameinsrv", server.debug.cnameinsrv),
+        ("animatedmotd", server.debug.animatedmotd),
+        ("cachehit", server.debug.cachehit)
     ]:
         yCoord += 1
         tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
