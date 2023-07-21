@@ -67,20 +67,22 @@ proc run*(): Future[void] {.async.} =
     tb.drawRect(0, 0, 40, 7)
     tb.drawHorizLine(2, 38, 2, doubleStyle=true)
 
-    # Basic
+    # Display the status, IP address and port of the server.
     tb.write(2, 4, "Online: ", (if server.isOnline: fgGreen else: fgRed), $server.isOnline, fgWhite)
     tb.write(2, 5, "IP: ", server.ip)
     tb.write(2, 6, "Port: ", $server.port)
 
-    # Data (section 1)
+    # Display basic information like versions and protocols.
     tb.write(2, 9, fmt"Version: {server.version}")
     if server.protocol.isSome:
         tb.write(2, 10, fmt"Protocol: {server.protocol.get()}")
 
+    # Display the current player count of the server.
     tb.drawVertLine(40, 20, 2)
     if server.playerCount.isSome:
         tb.write(2, 12, fmt"Players online: {server.playerCount.get().online} / {server.playerCount.get().max}")
 
+    # Display API-related information.
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
         ("Cache Expire", server.debug.cacheexpire),
@@ -89,7 +91,7 @@ proc run*(): Future[void] {.async.} =
         tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
         yCoord += 1
 
-    # Data (section 2)
+    # Display additional information like hostname, software and gamemodes.
     yCoord = 1
 
     for (name, value) in [
@@ -103,6 +105,7 @@ proc run*(): Future[void] {.async.} =
             tb.write(45, yCoord, fmt"{name}: {value.get()}")
             yCoord += 1
 
+    # Display the debug values associated with the server.
     for (name, value) in [
         ("ping", server.debug.ping),
         ("query", server.debug.query),
