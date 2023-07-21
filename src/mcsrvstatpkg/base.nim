@@ -156,22 +156,18 @@ proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
 
 proc isOnline*(self: Server): bool =
     ## Returns a boolean value depending on if the Minecraft server is online or not.
-
     return self.retrieveData("online").getBool()
 
 proc ip*(self: Server): string =
     ## Returns the IP address of the server.
-
     return self.retrieveData("ip").getStr()
 
 proc port*(self: Server): int =
     ## Returns the port of the server.
-
     return self.retrieveData("port").getInt()
 
 proc debug*(self: Server): ServerDebugValues =
     ## Returns the debug values related to the Minecraft server.
-
     let data = self.retrieveData("debug")
 
     return ServerDebugValues(
@@ -312,7 +308,6 @@ proc playerCount*(self: Server): Option[PlayerCount] =
 
 proc getPlayers*(self: Server): seq[Player] =
     ## **(Query-dependant)** Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
-    
     try:
         let data = self.retrieveData("players")
         var players: seq[Player]
@@ -332,7 +327,6 @@ proc getPlayers*(self: Server): seq[Player] =
 
 proc getPlayerByName*(self: Server, name: string): Player =
     ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
-    
     try:
         let
             data = self.retrieveData("players")
@@ -362,7 +356,6 @@ proc getPlayerByName*(self: Server, name: string): Player =
 
 proc icon*(self: Server): Icon =
     ## Returns an `Icon` object containing the icon of the Minecraft server.
-    
     return Icon(
         base64: self.iconData
     )
@@ -370,6 +363,5 @@ proc icon*(self: Server): Icon =
 proc save*(self: Icon, fileName: var string): void =
     ## Writes the icon of a server into the local drive with the given file name.
     ## The image is always saved as a `PNG` image.
-
     fileName.removeSuffix(".png")
     writeFile(fmt"{fileName}.png", self.base64)
