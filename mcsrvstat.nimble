@@ -1,6 +1,6 @@
 # Package
 
-version       = "1.2.0"
+version       = "1.3.0"
 author        = "HitBlast"
 description   = "A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API."
 license       = "MIT"
@@ -26,5 +26,5 @@ when defined(nimdistros):
 
 # Tasks
 
-task release, "Builds a production executable for the package":
-  exec "nimble build -d:ssl -d:release --accept"
+task release, "Builds a production executable for the package.":
+  exec "nimble build -d:ssl -d:release --hints:off --accept"
