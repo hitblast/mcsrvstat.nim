@@ -137,7 +137,7 @@ proc isOnline*(self: Server): bool =
     return self.retrieveData("online").getBool()
 
 proc isEulaBlocked*(self: Server): Option[bool] =
-    ## **(Java only)** Returns a boolean value depending on if the Minecraft server has blocked EULA or not.
+    ## **(Java-only)** Returns a boolean value depending on if the Minecraft server has blocked EULA or not.
     try:
         return some(self.retrieveData("eula_blocked").getBool())
     except DataError:
@@ -194,11 +194,11 @@ proc map*(self: Server): Option[string] =
     return self.retrieveOptionalStr("map")
 
 proc gamemode*(self: Server): Option[string] =
-    ## **(Bedrock only)** Returns the game mode used inside the server (Survival / Creative / Adventure).
+    ## **(Bedrock-only)** Returns the game mode used inside the server (Survival / Creative / Adventure).
     return self.retrieveOptionalStr("gamemode")
 
 proc serverid*(self: Server): Option[string] =
-    ## **(Bedrock only)** Returns the ID of the server.
+    ## **(Bedrock-only)** Returns the ID of the server.
     return self.retrieveOptionalStr("serverid")
 
 proc motd*(self: Server): Option[ServerMOTD] =
