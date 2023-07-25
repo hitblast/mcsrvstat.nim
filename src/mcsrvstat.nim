@@ -98,12 +98,19 @@ proc run*(): Future[void] {.async.} =
         ("Hostname", server.hostname), 
         ("Software", server.software), 
         ("Map", server.map), 
-        ("Gamemode", server.gamemode), 
-        ("ID", server.serverid)
+        ("[ B ] Gamemode", server.gamemode), 
+        ("[ B ] ID", server.serverid)
     ]:
         if value.isSome:
             tb.write(45, yCoord, fmt"{name}: {value.get()}")
             yCoord += 1
+
+    if (
+        server.isEulaBlocked.isSome
+    ):
+        let eulaStat = server.isEulaBlocked.get()
+        tb.write(45, yCoord, "[ J ] Server has ", (if eulaStat: "blocked" else: "unblocked"), " EULA.")
+        yCoord += 1
 
     # Display the debug values associated with the server.
     for (name, value) in [
