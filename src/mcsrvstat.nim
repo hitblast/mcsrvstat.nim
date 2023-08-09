@@ -138,10 +138,6 @@ proc main*(): Future[void] {.async.} =
 
         case key
         of Key.Escape, Key.Q: exitProc()
-        # of Key.R:
-        #     await server.refreshData()
-        #     tb.updateScreen(server)
-        #     tb.display()
         else: discard
 
         tb.updateScreen(server)
