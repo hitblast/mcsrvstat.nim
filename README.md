@@ -30,17 +30,17 @@
 - ### Nim (using [nimble](https://github.com/nim-lang/nimble))
 
 ```bash
-# requires Nim v1.6 or greater
+# Requires Nim v1.6 or greater.
 $ nimble install mcsrvstat.nim
 ```
 
 - ### macOS (using [Homebrew](https://brew.sh))
 
 ```bash
-# tapping the formula
+# Tapping the formula.
 $ brew tap hitblast/nimtap
 
-# installing it
+# Installing it.
 $ brew install mcsrvstat
 ```
 
@@ -112,7 +112,7 @@ For more use cases and detailed explanation, you can visit the [official documen
 The default build configuration (both for development and production) for this project is kept in the [mcsrvstat.nimble](https://github.com/hitblast/mcsrvstat.nim/blob/main/mcsrvstat.nimble) file. You can easily build binaries using the following command:
 
 ```bash
-# build using the built-in task
+# Build using the provided task.
 $ nimble release
 ```
 
