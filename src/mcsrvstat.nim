@@ -10,56 +10,19 @@ import std/[
     strutils
 ]
 import illwill, argparse
-
 import mcsrvstatpkg/base
 
 
-# Primary run() procedure for the hybrid package.
-proc run*(): Future[void] {.async.} =
+# Procedure for exiting the terminal buffer on key press.
+proc exitProc() {.noconv.} =
+    illwillDeinit()
+    showCursor()
+    quit(0)
 
-    # The primary command-line parser.
-    var
-        parser = newParser:
-            help("A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API.")
-            flag("-b", "--bedrock", help="Flags the server as a Minecraft: Bedrock Edition server.")
-            arg("address", help="The address of the Minecraft server.")
-        server: Server
 
-    try:
-        let opts = parser.parse()
-        server = Server(
-            address: opts.address,
-            platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA
-        )
-        await server.refreshData()
-
-    except ShortCircuit as err:
-        if err.flag == "argparse_help":
-            echo err.help
-            quit(1)
-
-    except UsageError:
-        stderr.writeLine getCurrentExceptionMsg()
-        quit(1)
-
-    except ConnectionError:
-        echo "Make sure you've passed the correct IP for the server."
-        quit(1)
-
-    # Initialize an instance of illwave and run the TUI if the code above succeeds.
-    # This includes a cursor-less window, so an exit procedure is also required.
-    proc exitProc() {.noconv.} =
-        illwillDeinit()
-        showCursor()
-        quit(0)
-
-    illwillInit(fullscreen=true)
-    setControlCHook(exitProc)
-    hideCursor()
-
-    var
-        tb = newTerminalBuffer(terminalWidth(), terminalHeight())
-        yCoord = 14
+# Procedure for updating the terminal buffer with new content.
+proc updateScreen(tb: var TerminalBuffer, server: Server) =
+    var yCoord = 14
 
     # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
@@ -126,15 +89,63 @@ proc run*(): Future[void] {.async.} =
         yCoord += 1
         tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
 
-    # Finally, display the entire thing.
+
+# Primary procedure for parsing command-line arguments, fetching server data 
+# and displaying it in terminal.
+proc main*(): Future[void] {.async.} =
+
+    # The primary command-line parser.
+    var
+        parser = newParser:
+            help("A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API.")
+            flag("-b", "--bedrock", help="Flags the server as a Minecraft: Bedrock Edition server.")
+            arg("address", help="The address of the Minecraft server.")
+        server: Server
+
+    try:
+        let opts = parser.parse()
+        server = Server(
+            address: opts.address,
+            platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA
+        )
+        await server.refreshData()
+
+    except ShortCircuit as err:
+        if err.flag == "argparse_help":
+            echo err.help
+            quit(1)
+
+    except UsageError:
+        stderr.writeLine getCurrentExceptionMsg()
+        quit(1)
+
+    except ConnectionError:
+        echo "Make sure you've passed the correct IP for the server."
+        quit(1)
+
+    # Initialize a new illwill instance with fullscreen set to true.
+    # Also set the procedure for exiting the terminal window.
+    illwillInit(fullscreen=true)
+    setControlCHook(exitProc)
+    hideCursor()        
+
+    # Finally, update screen using the defined procedure and display the thing.
     # This also includes checking for keypress events in order for the user to quit the interface.
     while true:
-        tb.display()
+        var 
+            tb = newTerminalBuffer(terminalWidth(), terminalHeight())
+            key = getKey()
 
-        var key = getKey()
         case key
         of Key.Escape, Key.Q: exitProc()
+        # of Key.R:
+        #     await server.refreshData()
+        #     tb.updateScreen(server)
+        #     tb.display()
         else: discard
+
+        tb.updateScreen(server)
+        tb.display()
 
         sleep(20)
 
@@ -143,7 +154,7 @@ proc run*(): Future[void] {.async.} =
 # Also handle some of the root exceptions as needed.
 when isMainModule:
     try:
-        waitFor run()
+        waitFor main()
 
     except DataError:
         echo "Make sure you've passed the proper platform for the server."
