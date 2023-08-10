@@ -109,11 +109,9 @@ For more use cases and detailed explanation, you can visit the [official documen
 
 ## 🔨 Building
 
-The default build configuration (both for development and production) for this project is kept in the [mcsrvstat.nimble](https://github.com/hitblast/mcsrvstat.nim/blob/main/mcsrvstat.nimble) file. You can easily build binaries using the following command:
-
 ```bash
-# Build using the provided task.
-$ nimble release
+# Prepare a release build.
+$ nimble build -d:ssl -d:release --accept
 ```
 
 The various third-party libraries and dependancies used for developing this project are mentioned below:
