@@ -13,20 +13,16 @@ import illwill, argparse
 import mcsrvstatpkg/base
 
 
-# Procedure for exiting the terminal buffer on key press.
-proc exitProc() {.noconv.} =
-    illwillDeinit()
-    showCursor()
-    quit(0)
-
-
 # Procedure for updating the terminal buffer with new content.
-proc updateScreen(tb: var TerminalBuffer, server: Server) =
+proc updateScreen(tb: var TerminalBuffer, server: Server): void =
+    tb.clear()
+
+    # Start decorating.
     var yCoord = 14
 
     # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
-    tb.write(2, 1, "[ Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "q", fgWhite, " to quit. ]")
+    tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit, ", fgRed, "R", fgWhite, " to refresh.")
     tb.drawRect(0, 0, 40, 7)
     tb.drawHorizLine(2, 38, 2, doubleStyle=true)
 
@@ -125,25 +121,32 @@ proc main*(): Future[void] {.async.} =
 
     # Initialize a new illwill instance with fullscreen set to true.
     # Also set the procedure for exiting the terminal window.
+    proc exitProc() {.noconv.} =
+        illwillDeinit()
+        showCursor()
+        quit(0)
+
     illwillInit(fullscreen=true)
     setControlCHook(exitProc)
-    hideCursor()        
+    hideCursor()
 
     # Finally, update screen using the defined procedure and display the thing.
     # This also includes checking for keypress events in order for the user to quit the interface.
+    var tb = newTerminalBuffer(terminalWidth(), terminalHeight())
+    tb.updateScreen(server)
+
     while true:
-        var 
-            tb = newTerminalBuffer(terminalWidth(), terminalHeight())
-            key = getKey()
+        var key = getKey()
 
         case key
         of Key.Escape, Key.Q: exitProc()
+        of Key.R: 
+            await server.refreshData()
+            tb.updateScreen(server)
         else: discard
 
-        tb.updateScreen(server)
         tb.display()
-
-        sleep(20)
+        await sleepAsync(20)
 
 
 # Run the program.
@@ -153,9 +156,5 @@ when isMainModule:
         waitFor main()
 
     except DataError:
-        echo "Make sure you've passed the proper platform for the server."
-        quit(1)
-
-    except IOError:
-        echo "Can't run mcsrvstat.nim since proper support for SSL couldn't be found."
+        echo "Make sure you've passed the proper platform and/or IP for the server."
         quit(1)
