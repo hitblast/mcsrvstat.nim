@@ -2,7 +2,7 @@
 
 
 # Primary package information.
-version       = "1.3.1"
+version       = "1.3.2"
 author        = "HitBlast"
 description   = "A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API."
 license       = "MIT"
@@ -12,9 +12,9 @@ bin           = @["mcsrvstat"]
 
 
 # Nim dependencies / required libraries.
-requires "nim >= 1.6"
+requires "nim >= 1.6.10"
 requires "argparse >= 4.0"
-requires "illwill >= 0.3"
+requires "illwill == 0.3.2"
 
 
 # External dependencies.
