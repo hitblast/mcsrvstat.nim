@@ -22,31 +22,31 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
 
     # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
-    tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit, ", fgRed, "R", fgWhite, " to refresh.")
-    tb.drawRect(0, 0, 40, 7)
+    tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit, ", fgYellow, "R", fgWhite, " to refresh.")
+    tb.drawRect(0, 0, 40, 8)
     tb.drawHorizLine(2, 38, 2, doubleStyle=true)
 
     # Display the status, IP address and port of the server.
     tb.write(2, 4, "Online: ", (if server.isOnline: fgGreen else: fgRed), $server.isOnline, fgWhite)
     tb.write(2, 5, "IP: ", server.ip)
     tb.write(2, 6, "Port: ", $server.port)
+    tb.write(2, 7, "API Version: ", $server.debug.apiversion, fgWhite)
 
     # Display basic information like versions and protocols.
-    tb.write(2, 9, fmt"Version: {server.version}")
+    tb.write(2, 10, fmt"Version: {server.version}")
     if server.protocol.isSome:
         let protocol = server.protocol.get()
-        tb.write(2, 10, fmt"Protocol: {protocol.name} ({protocol.version})")
+        tb.write(2, 11, fmt"Protocol: {protocol.name} ({protocol.version})")
 
     # Display the current player count of the server.
-    tb.drawVertLine(40, 20, 2)
+    tb.drawVertLine(40, 19, 2)
     if server.playerCount.isSome:
-        tb.write(2, 12, fmt"Players online: {server.playerCount.get().online} / {server.playerCount.get().max}")
+        tb.write(2, 13, fmt"Players online: {server.playerCount.get().online} / {server.playerCount.get().max}")
 
     # Display API-related information.
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
-        ("Cache Expire", server.debug.cacheexpire),
-        ("API Version", server.debug.apiversion)
+        ("Cache Expire", server.debug.cacheexpire)
     ]:
         tb.write(2, yCoord, fmt"{name}: ", fgCyan, $value, fgWhite)
         yCoord += 1

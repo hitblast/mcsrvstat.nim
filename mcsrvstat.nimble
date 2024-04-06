@@ -14,7 +14,7 @@ bin           = @["mcsrvstat"]
 # Nim dependencies / required libraries.
 requires "nim >= 1.6.10"
 requires "argparse >= 4.0"
-requires "illwill == 0.3.2"
+requires "illwill >= 0.4.0"
 
 
 # External dependencies.
