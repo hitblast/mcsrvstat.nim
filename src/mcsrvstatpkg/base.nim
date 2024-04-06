@@ -50,12 +50,12 @@ type
     Plugin* = object  ## Represents a plugin of a Minecraft server.
         name*, version*: string
 
-    Protocol* = object  ## Represents the protocol of a Minecraft server.
-        name*, version*: string
-
     Mod* = object  ## Represents a mod of a Minecraft server.
         name*, version*: string
 
+    Protocol* = object  ## Represents the protocol of a Minecraft server.
+        name*: string
+        version*: int
 
 # Custom exception objects for handling data-related errors.
 type
@@ -190,8 +190,8 @@ proc protocol*(self: Server): Option[Protocol] =
 
         return some(
             Protocol(
-                name: protocol["name"].getStr(),
-                version: protocol["version"].getStr()
+                name: protocol{"name"}.getStr(),
+                version: protocol{"version"}.getInt()
             )
         )
     except DataError:
