@@ -32,23 +32,29 @@ type
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*, cachehit*: bool
         cachetime*, cacheexpire*, apiversion*: int
 
+    ServerMap* = object  ## Represents the map name of a Minecraft server.
+        raw*, clean*, html*: string
+
     ServerMOTD* = object  ## Represents the MOTD **(Message of The Day)** of a Minecraft server.
         raw*, clean*, html*: seq[string]
 
     ServerInfo* = object  ## Represents certain information related to a Minecraft server. Only included if the server uses player samples for gathering information.
         raw*, clean*, html*: seq[string]
 
-    ServerPlugins* = object  ## Represents the plugins used on a Minecraft server.
-        names*, raw*: seq[string]
-
-    ServerMods* = object  ## Represents the mods installed on a Minecraft server.
-        names*, raw*: seq[string]
-
     PlayerCount* = object  ## Represents the total amount of online players (and the maximum player capacity) of a Minecraft server.
         online*, max*: int
 
     Player* = object  ## Represents a player of a Minecraft server.
         name*, uuid*: string
+
+    Plugin* = object  ## Represents a plugin of a Minecraft server.
+        name*, version*: string
+
+    Protocol* = object  ## Represents the protocol of a Minecraft server.
+        name*, version*: string
+
+    Mod* = object  ## Represents a mod of a Minecraft server.
+        name*, version*: string
 
 
 # Custom exception objects for handling data-related errors.
@@ -76,7 +82,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
     ## Connect to the API and load the data related to the given Minecraft server into the `Server` object.
 
     let client = newAsyncHttpClient()
-    let platform = if self.platform == Platform.JAVA: "2/" else: "bedrock/2/"
+    let platform = if self.platform == Platform.JAVA: "3/" else: "bedrock/3/"
 
     let data = parseJson(await client.getContent(
             fmt"https://api.mcsrvstat.us/{platform}{self.address}"))
@@ -173,13 +179,24 @@ proc version*(self: Server): string =
     ## Returns the version of software used for running the Minecraft server. This can include multiple versions or additional text depending on the server.
     return self.retrieveData("version").getStr()
 
-proc protocol*(self: Server): Option[int] =
+proc protocol*(self: Server): Option[Protocol] =
     ## **(Optional)** Returns the protocol of the server. Only returned if `ping` is set to `True` within the debug values.
+    
     try:
+        if not self.debug.ping:
+            raise DataError.newException("Protocol data is not available for this server.")
+
         let protocol = self.retrieveData("protocol")
-        return some(protocol.getInt())
+
+        return some(
+            Protocol(
+                name: protocol["name"].getStr(),
+                version: protocol["version"].getStr()
+            )
+        )
     except DataError:
-        return none(int)
+        return none(Protocol)
+    
 
 proc hostname*(self: Server): Option[string] =
     ## **(If detected)** Returns the hostname of the server.
@@ -189,10 +206,6 @@ proc software*(self: Server): Option[string] =
     ## **(If detected)** Returns the software used for the server.
     return self.retrieveOptionalStr("software")
 
-proc map*(self: Server): Option[string] =
-    ## **(If detected)** Returns the map name of the server.
-    return self.retrieveOptionalStr("map")
-
 proc gamemode*(self: Server): Option[string] =
     ## **(Bedrock-only)** Returns the game mode used inside the server (Survival / Creative / Adventure).
     return self.retrieveOptionalStr("gamemode")
@@ -201,8 +214,24 @@ proc serverid*(self: Server): Option[string] =
     ## **(Bedrock-only)** Returns the ID of the server.
     return self.retrieveOptionalStr("serverid")
 
+proc map*(self: Server): Option[ServerMap] =
+    ## **(If detected)** Returns a `ServerMap` object representing the map name of the server.
+    try:
+        let data = self.retrieveData("map")
+
+        return some(
+            ServerMap(
+                raw: data["raw"].getStr(),
+                clean: data["clean"].getStr(),
+                html: data["html"].getStr()
+            )
+        )
+    
+    except KeyError, DataError:
+        return none(ServerMap)
+
 proc motd*(self: Server): Option[ServerMOTD] =
-    ## **(If any)** Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
+    ## **(If detected)** Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
     try:
         let
             raw = self.returnMappedStr("motd", "raw")
@@ -220,42 +249,44 @@ proc motd*(self: Server): Option[ServerMOTD] =
     except DataError:
         return none(ServerMOTD)
 
-proc plugins*(self: Server): Option[ServerPlugins] =
-    ## **(If detected)** Returns a `ServerPlugins` object representing the plugins used on the server.
+proc plugins*(self: Server): Option[seq[Plugin]] =
+    ## **(If detected)** Returns a sequence of `Plugin` objects, representing the plugins currently installed on the server.
     try:
-        let
-            names = self.returnMappedStr("plugins", "names")
-            raw = self.returnMappedStr("plugins", "raw")
+        let data = self.retrieveData("plugins")
+        var plugins: seq[Plugin]
 
-        return some(
-            ServerPlugins(
-                names: names,
-                raw: raw
+        for plugin in data:
+            plugins.add(
+                Plugin(
+                    name: plugin["name"].getStr(),
+                    version: plugin["version"].getStr()
+                )
             )
-        )
+        return some(plugins)
 
     except DataError:
-        return none(ServerPlugins)
+        return none(seq[Plugin])
 
-proc mods*(self: Server): Option[ServerMods] =
-    ## **(If detected)** Returns a `ServerMods` object representing the mods currently installed on the server.
+proc mods*(self: Server): Option[seq[Mod]] =
+    ## **(If detected)** Returns a sequence of `Mod` objects, representing the mods currently in use on the server.
     try:
-        let
-            names = self.returnMappedStr("mods", "names")
-            raw = self.returnMappedStr("mods", "raw")
+        let data = self.retrieveData("mods")
+        var mods: seq[Mod]
 
-        return some(
-            ServerMods(
-                names: names,
-                raw: raw
+        for moditem in data:
+            mods.add(
+                Mod(
+                    name: moditem["name"].getStr(),
+                    version: moditem["version"].getStr()
+                )
             )
-        )
+        return some(mods)
 
     except DataError:
-        return none(ServerMods)
+        return none(seq[Mod])
 
 proc info*(self: Server): Option[ServerInfo] =
-    ## **(Optional)** Returns a `ServerInfo` object representing some extra bits of information related to the server.
+    ## **(If detected)** Returns a `ServerInfo` object representing some extra bits of information related to the server.
     try:
         let
             raw = self.returnMappedStr("info", "raw")
@@ -274,7 +305,7 @@ proc info*(self: Server): Option[ServerInfo] =
         return none(ServerInfo)
 
 proc playerCount*(self: Server): Option[PlayerCount] =
-    ## **(Optional)** Returns a `PlayerCount` object representing the total amount of active players (and the maximum player capacity) of the server.
+    ## **(If detected)** Returns a `PlayerCount` object representing the total amount of active players (and the maximum player capacity) of the server.
     try:
         let
             count = self.retrieveData("players")
@@ -291,44 +322,40 @@ proc playerCount*(self: Server): Option[PlayerCount] =
     except DataError:
         return none(PlayerCount)
 
-proc getPlayers*(self: Server): seq[Player] =
+proc getPlayers*(self: Server): Option[seq[Player]] =
     ## **(Query-dependant)** Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     try:
-        let data = self.retrieveData("players")
+        let data = self.retrieveData("players")["list"]
         var players: seq[Player]
 
-        for player in data["uuid"]:
+        for player in data:
             players.add(
                 Player(
                     name: player["name"].getStr(),
                     uuid: player["uuid"].getStr()
                 )
             )
-
-        return players
+        return some(players)
 
     except KeyError, DataError:
-        raise QueryError.newException("Could not query for server players list.")
+        return none(seq[Player])
 
 proc getPlayerByName*(self: Server, name: string): Player =
     ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
     try:
-        let
-            data = self.retrieveData("players")
-            players = data["uuid"]
-            uuid = players{name}.getStr()
+        let data = self.retrieveData("players")
 
-        if uuid != "":
-            return Player(
-                name: name,
-                uuid: uuid
-            )
+        for player in data:
+            if player["name"].getStr() == name:
+                return Player(
+                    name: player["name"].getStr(),
+                    uuid: player["uuid"].getStr()
+                )
 
-        else:
-            raise PlayerNotFoundError.newException(fmt"Player '{name}' could not be found online.")
+        raise PlayerNotFoundError.newException(fmt"Player '{name}' could not be found online.")
 
     except KeyError, DataError:
-        raise QueryError.newException("Could not query for server players list.")
+        raise QueryError.newException("Could not query server for players list.")
 
 
 #[
