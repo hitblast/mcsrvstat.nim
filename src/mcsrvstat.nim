@@ -23,7 +23,11 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
 
     # The top panel for the terminal.
     tb.setForegroundColor(fgWhite, true)
-    tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit, ", fgYellow, "R", fgWhite, " to refresh.")
+    tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit. ")
+    
+    if not server.autorefresh:
+        tb.write(23, 1, fgYellow, "R", fgWhite, " to refresh.")
+
     tb.drawRect(0, 0, 40, 8)
     tb.drawHorizLine(2, 38, 2, doubleStyle=true)
 
