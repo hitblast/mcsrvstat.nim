@@ -53,6 +53,9 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
         tb.write(2, 13, fmt"Players online: {server.playerCount.get().online} / {server.playerCount.get().max}")
 
     # Display API-related information.
+    yCoord += 2
+    tb.drawHorizLine(2, 35, 14)
+
     for (name, value) in [
         ("Cache Time", server.debug.cachetime),
         ("Cache Expire", server.debug.cacheexpire)
