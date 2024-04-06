@@ -8,7 +8,6 @@ import std/[
     json,
     options,
     sequtils,
-    strformat,
     strutils,
     times
 ]
@@ -84,8 +83,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
     let client = newAsyncHttpClient()
     let platform = if self.platform == Platform.JAVA: "3/" else: "bedrock/3/"
 
-    let data = parseJson(await client.getContent(
-            fmt"https://api.mcsrvstat.us/{platform}{self.address}"))
+    let data = parseJson(await client.getContent("https://api.mcsrvstat.us/" & platform & self.address))
 
     if (
         data["debug"]{"error"}{"ping"}.getStr() == "No address to query"
@@ -94,7 +92,7 @@ proc refreshData*(self: Server): Future[void] {.async.} =
 
     else:
         self.data = some(data)
-        self.iconData = await client.getContent(fmt"https://api.mcsrvstat.us/icon/{self.address}")
+        self.iconData = await client.getContent("https://api.mcsrvstat.us/icon/" & self.address)
 
         client.close()
 
@@ -356,7 +354,7 @@ proc getPlayerByName*(self: Server, name: string): Player =
                     uuid: player["uuid"].getStr()
                 )
 
-        raise PlayerNotFoundError.newException(fmt"Player '{name}' could not be found online.")
+        raise PlayerNotFoundError.newException("Player " & name & " could not be found online.")
 
     except KeyError, DataError:
         raise QueryError.newException("Could not query server for players list.")
