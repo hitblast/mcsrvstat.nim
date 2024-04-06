@@ -7,6 +7,7 @@ import std/[
     httpclient,
     json,
     options,
+    sugar,
     sequtils,
     strutils,
     times
@@ -327,51 +328,41 @@ proc playerCount*(self: Server): Option[PlayerCount] =
 proc players*(self: Server): Option[seq[Player]] =
     ## **(Query-dependant)** Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     try:
-        let data = self.retrieveData("players")["list"]
-        var players: seq[Player]
+        let 
+            data = self.retrieveData("players")["list"]
+            players: seq[Player] = collect:
+                for player in data:
+                    Player(
+                        name: player["name"].getStr(),
+                        uuid: player["uuid"].getStr()
+                    )
 
-        for player in data:
-            players.add(
-                Player(
-                    name: player["name"].getStr(),
-                    uuid: player["uuid"].getStr()
-                )
-            )
         return some(players)
 
     except KeyError, DataError:
         return none(seq[Player])
 
-proc getPlayerByName*(self: Server, name: string): Player =
-    ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
+proc getPlayerByName*(self: Server, name: string): seq[Player] =
+    ## **(Query-dependant)** Returns a sequence of players currently online on the server matching the name given.
+    
     try:
-        let data = self.retrieveData("players")
+        let players = self.players.get()
+        return players.filter(proc(player: Player): bool = player.name == name)
 
-        for player in data:
-            if player["name"].getStr() == name:
-                return Player(
-                    name: player["name"].getStr(),
-                    uuid: player["uuid"].getStr()
-                )
-
-        raise PlayerNotFoundError.newException("Player with name '" & name & "' could not be found online.")
-
-    except KeyError, DataError:
-        raise QueryError.newException("Could not query server for players list.")
+    except UnpackDefect:
+        raise QueryError.newException("Player data not found for this server.")
 
 proc getPlayerByUUID*(self: Server, uuid: string): Player =
     ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
+    
     try:
-        let data = self.retrieveData("players")
+        let players = self.players.get()
+        
+        for player in players:
+            if player.uuid == uuid:
+                return player
 
-        for player in data:
-            if player["uuid"].getStr() == uuid:
-                return Player(
-                    name: player["name"].getStr(),
-                    uuid: player["uuid"].getStr()
-                )
+        raise PlayerNotFoundError.newException("Player with UUID " & uuid & " not found online.")
 
-        raise PlayerNotFoundError.newException("Player with UUID '" & uuid & "' could not be found online.")
-
-    except KeyError, DataError:
-        raise QueryError.newException("Could not query server for players list.")
+    except UnpackDefect:
+        raise QueryError.newException("Player data not found for this server.")
