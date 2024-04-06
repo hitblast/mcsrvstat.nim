@@ -233,6 +233,39 @@ proc map*(self: Server): Option[ServerMap] =
     except KeyError, DataError:
         return none(ServerMap)
 
+
+proc plugins*(self: Server): Option[seq[Plugin]] =
+    ## **(If detected)** Returns a sequence of `Plugin` objects, representing the plugins currently installed on the server.
+    try:
+        let 
+            data = self.retrieveData("plugins")
+            plugins: seq[Plugin] = collect:
+                for plugin in data:
+                    Plugin(
+                        name: plugin["name"].getStr(),
+                        version: plugin["version"].getStr()
+                    )
+        return some(plugins)
+
+    except DataError:
+        return none(seq[Plugin])
+
+proc mods*(self: Server): Option[seq[Mod]] =
+    ## **(If detected)** Returns a sequence of `Mod` objects, representing the mods currently in use on the server.
+    try:
+        let
+            data = self.retrieveData("mods")
+            mods: seq[Mod] = collect:
+                for moditem in data:
+                    Mod(
+                        name: moditem["name"].getStr(),
+                        version: moditem["version"].getStr()
+                    )
+        return some(mods)
+
+    except DataError:
+        return none(seq[Mod])
+
 proc motd*(self: Server): Option[ServerMOTD] =
     ## **(If detected)** Returns a `ServerMOTD` object representing the MOTD (Message of the Day) for the server.
     try:
@@ -251,42 +284,6 @@ proc motd*(self: Server): Option[ServerMOTD] =
 
     except DataError:
         return none(ServerMOTD)
-
-proc plugins*(self: Server): Option[seq[Plugin]] =
-    ## **(If detected)** Returns a sequence of `Plugin` objects, representing the plugins currently installed on the server.
-    try:
-        let data = self.retrieveData("plugins")
-        var plugins: seq[Plugin]
-
-        for plugin in data:
-            plugins.add(
-                Plugin(
-                    name: plugin["name"].getStr(),
-                    version: plugin["version"].getStr()
-                )
-            )
-        return some(plugins)
-
-    except DataError:
-        return none(seq[Plugin])
-
-proc mods*(self: Server): Option[seq[Mod]] =
-    ## **(If detected)** Returns a sequence of `Mod` objects, representing the mods currently in use on the server.
-    try:
-        let data = self.retrieveData("mods")
-        var mods: seq[Mod]
-
-        for moditem in data:
-            mods.add(
-                Mod(
-                    name: moditem["name"].getStr(),
-                    version: moditem["version"].getStr()
-                )
-            )
-        return some(mods)
-
-    except DataError:
-        return none(seq[Mod])
 
 proc info*(self: Server): Option[ServerInfo] =
     ## **(If detected)** Returns a `ServerInfo` object representing some extra bits of information related to the server.
