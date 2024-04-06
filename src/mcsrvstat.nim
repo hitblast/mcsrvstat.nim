@@ -86,6 +86,10 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
         tb.write(45, yCoord, fmt"{name}: ", (if value: fgGreen else: fgRed), $value, fgWhite)
 
 
+    # Display the server's MOTD.
+    tb.write(45, (yCoord + 2), server.motd.get().clean.join(" ").strip()[0..45], "...")
+
+
 # Primary procedure for parsing command-line arguments, fetching server data 
 # and displaying it in terminal.
 proc main*(): Future[void] {.async.} =
