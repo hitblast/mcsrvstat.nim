@@ -66,6 +66,9 @@ $ mcsrvstat hypixel.net
 
 # Fetching a Minecraft: Bedrock Edition server.
 $ mcsrvstat mco.mineplex.com --bedrock
+
+# Fetching with auto-refreshing enabled.
+$ mcsrvstat play.hivemc.com --autorefresh
 ```
 
 ### ... as a Nim library

@@ -7,7 +7,8 @@ import std/[
     os,
     options,
     strformat,
-    strutils
+    strutils,
+    times
 ]
 import illwill, argparse
 import mcsrvstatpkg/base
@@ -98,6 +99,7 @@ proc main*(): Future[void] {.async.} =
     var
         parser = newParser:
             help("A hybrid and asynchronous Nim wrapper for the Minecraft Server Status API.")
+            flag("-a", "--autorefresh", help="Automatically refreshes the server data when the cache expires.")
             flag("-b", "--bedrock", help="Flags the server as a Minecraft: Bedrock Edition server.")
             arg("address", help="The address of the Minecraft server.")
         server: Server
@@ -106,7 +108,8 @@ proc main*(): Future[void] {.async.} =
         let opts = parser.parse()
         server = Server(
             address: opts.address,
-            platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA
+            platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA,
+            autorefresh: opts.autorefresh
         )
         await server.refreshData()
 
@@ -148,6 +151,11 @@ proc main*(): Future[void] {.async.} =
             await server.refreshData()
             tb.updateScreen(server)
         else: discard
+
+        if server.autorefresh and now() >= parse(server.debug.cacheexpire, "yyyy-MM-dd HH:mm:ss"):
+            await server.refreshData()
+            tb.updateScreen(server)
+            await sleepAsync(5)
 
         tb.display()
         await sleepAsync(20)
