@@ -90,11 +90,12 @@ let server = Server(
 proc main() {.async.} =
     await server.refreshData()  # Loads the server data into memory.
 
-    if server.online:
+    if server.isOnline:
         echo fmt"Server running on: {server.ip} (port {server.port})"
 
         # Save the icon of the server.
-        server.icon.save("filename")
+        writeFile("server-icon.png", server.icon)
+        echo "Server icon saved as an image!"
 
     else:
         echo "Server is offline!"

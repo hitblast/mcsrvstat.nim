@@ -25,9 +25,6 @@ type
         data: Option[JsonNode]
         iconData: string
 
-    Icon* = object  ## Represents the icon of a Minecraft server.
-        base64: string
-
     ServerDebugValues* = object  ## Represents the debug values related to a Minecraft server.
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*, cachehit*: bool
         cachetime*, cacheexpire*, apiversion*: int
@@ -137,6 +134,10 @@ proc returnMappedStr(self: Server, key1, key2: string): seq[string] =
     Once again, thanks for keeping the code clean! :D
 ]#
 
+
+proc icon*(self: Server): string =
+    ## Returns the icon of the server in BASE64 string format.
+    return self.iconData
 
 proc isOnline*(self: Server): bool =
     ## Returns a boolean value depending on if the Minecraft server is online or not.
@@ -356,24 +357,3 @@ proc getPlayerByName*(self: Server, name: string): Player =
 
     except KeyError, DataError:
         raise QueryError.newException("Could not query server for players list.")
-
-
-#[
-    This is an additional part for the server icon endpoint of the API.
-    The code below is written in conjunction with both:
-        1. The Server object, and
-        2. The Icon object.
-]#
-
-
-proc icon*(self: Server): Icon =
-    ## Returns an `Icon` object containing the icon of the Minecraft server.
-    return Icon(
-        base64: self.iconData
-    )
-
-proc save*(self: Icon, fileName: var string): void =
-    ## Writes the icon of a server into the local drive with the given file name.
-    ## The image is always saved as a `PNG` image.
-    fileName.removeSuffix(".png")
-    writeFile(fmt"{fileName}.png", self.base64)
