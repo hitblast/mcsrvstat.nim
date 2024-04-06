@@ -34,7 +34,8 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
     # Display basic information like versions and protocols.
     tb.write(2, 9, fmt"Version: {server.version}")
     if server.protocol.isSome:
-        tb.write(2, 10, fmt"Protocol: {server.protocol.get()}")
+        let protocol = server.protocol.get()
+        tb.write(2, 10, fmt"Protocol: {protocol.name} ({protocol.version})")
 
     # Display the current player count of the server.
     tb.drawVertLine(40, 20, 2)
@@ -56,7 +57,6 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
     for (name, value) in [
         ("Hostname", server.hostname), 
         ("Software", server.software), 
-        ("Map", server.map), 
         ("[ B ] Gamemode", server.gamemode), 
         ("[ B ] ID", server.serverid)
     ]:
