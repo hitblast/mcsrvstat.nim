@@ -233,7 +233,6 @@ proc map*(self: Server): Option[ServerMap] =
     except KeyError, DataError:
         return none(ServerMap)
 
-
 proc plugins*(self: Server): Option[seq[Plugin]] =
     ## **(If detected)** Returns a sequence of `Plugin` objects, representing the plugins currently installed on the server.
     try:
