@@ -322,7 +322,7 @@ proc playerCount*(self: Server): Option[PlayerCount] =
         return none(PlayerCount)
 
 proc players*(self: Server): Option[seq[Player]] =
-    ## **(Query-dependant)** Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
+    ## Returns a sequence of `Player` objects representing currently online (and queried) players on the server.
     try:
         let 
             data = self.retrieveData("players")["list"]
