@@ -23,7 +23,6 @@ type
     Server* = ref object  ## Represents an object reference of a Minecraft server. You will primarily use this object to interact with the API.
         address*: string
         platform*: Platform
-        autorefresh*: bool
         data: Option[JsonNode]
         iconData: string
 

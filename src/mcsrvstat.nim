@@ -14,6 +14,10 @@ import illwill, argparse
 import mcsrvstatpkg/base
 
 
+# Autorefresh flag variable for the terminal buffer.
+var AUTOREFRESH: bool = false
+
+
 # Procedure for updating the terminal buffer with new content.
 proc updateScreen(tb: var TerminalBuffer, server: Server): void =
     tb.clear()
@@ -25,7 +29,7 @@ proc updateScreen(tb: var TerminalBuffer, server: Server): void =
     tb.setForegroundColor(fgWhite, true)
     tb.write(2, 1, "Press ", fgYellow, "esc", fgWhite, "/", fgYellow, "Q", fgWhite, " to quit. ")
     
-    if not server.autorefresh:
+    if not AUTOREFRESH:
         tb.write(23, 1, fgYellow, "R", fgWhite, " to refresh.")
 
     tb.drawRect(0, 0, 40, 8)
@@ -113,8 +117,8 @@ proc main*(): Future[void] {.async.} =
         server = Server(
             address: opts.address,
             platform: if opts.bedrock: Platform.BEDROCK else: Platform.JAVA,
-            autorefresh: opts.autorefresh
         )
+        AUTOREFRESH = opts.autorefresh
         await server.refreshData()
 
     except ShortCircuit as err:
@@ -156,7 +160,7 @@ proc main*(): Future[void] {.async.} =
             tb.updateScreen(server)
         else: discard
 
-        if server.autorefresh and now() >= parse(server.debug.cacheexpire, "yyyy-MM-dd HH:mm:ss"):
+        if AUTOREFRESH and now() >= parse(server.debug.cacheexpire, "yyyy-MM-dd HH:mm:ss"):
             await server.refreshData()
             tb.updateScreen(server)
             await sleepAsync(5)
