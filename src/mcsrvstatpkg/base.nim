@@ -354,7 +354,24 @@ proc getPlayerByName*(self: Server, name: string): Player =
                     uuid: player["uuid"].getStr()
                 )
 
-        raise PlayerNotFoundError.newException("Player " & name & " could not be found online.")
+        raise PlayerNotFoundError.newException("Player with name '" & name & "' could not be found online.")
+
+    except KeyError, DataError:
+        raise QueryError.newException("Could not query server for players list.")
+
+proc getPlayerByUUID*(self: Server, uuid: string): Player =
+    ## **(Query-dependant)** Returns the data associated with a player through a `Player` object.
+    try:
+        let data = self.retrieveData("players")
+
+        for player in data:
+            if player["uuid"].getStr() == uuid:
+                return Player(
+                    name: player["name"].getStr(),
+                    uuid: player["uuid"].getStr()
+                )
+
+        raise PlayerNotFoundError.newException("Player with UUID '" & uuid & "' could not be found online.")
 
     except KeyError, DataError:
         raise QueryError.newException("Could not query server for players list.")
