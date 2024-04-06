@@ -9,7 +9,8 @@ import std/[
     options,
     sequtils,
     strformat,
-    strutils
+    strutils,
+    times
 ]
 
 
@@ -27,7 +28,8 @@ type
 
     ServerDebugValues* = object  ## Represents the debug values related to a Minecraft server.
         ping*, query*, srv*, querymismatch*, ipinsrv*, cnameinsrv*, animatedmotd*, cachehit*: bool
-        cachetime*, cacheexpire*, apiversion*: int
+        cachetime*, cacheexpire*: string
+        apiversion*: int
 
     ServerMap* = object  ## Represents the map name of a Minecraft server.
         raw*, clean*, html*: string
@@ -171,8 +173,8 @@ proc debug*(self: Server): ServerDebugValues =
         cnameinsrv: data["cnameinsrv"].getBool(),
         animatedmotd: data["animatedmotd"].getBool(),
         cachehit: data["cachehit"].getBool(),
-        cachetime: data["cachetime"].getInt(),
-        cacheexpire: data["cacheexpire"].getInt(),
+        cachetime: fromUnix(data["cachetime"].getInt()).format("yyyy-MM-dd HH:mm:ss"),
+        cacheexpire: fromUnix(data["cacheexpire"].getInt()).format("yyyy-MM-dd HH:mm:ss"),
         apiversion: data["apiversion"].getInt()
     )
 
@@ -185,7 +187,7 @@ proc protocol*(self: Server): Option[Protocol] =
     
     try:
         if not self.debug.ping:
-            raise DataError.newException("Protocol data is not available for this server.")
+            raise QueryError.newException("Protocol data is not available for this server.")
 
         let protocol = self.retrieveData("protocol")
 
