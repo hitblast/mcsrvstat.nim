@@ -112,7 +112,8 @@ For more use cases and detailed explanation, you can visit the [official documen
 
 ```bash
 # Prepare a release build.
-$ nimble build -d:ssl -d:release --accept
+# This uses the "release" task provided with the project.
+$ nimble release
 ```
 
 The various third-party libraries and dependancies used for developing this project are mentioned below:
