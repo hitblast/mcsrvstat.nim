@@ -30,7 +30,7 @@
 - ### Nim (using [nimble](https://github.com/nim-lang/nimble))
 
 ```bash
-# Requires Nim v1.6 or greater.
+# Requires Nim v2.0 or greater.
 $ nimble install mcsrvstat.nim
 ```
 
