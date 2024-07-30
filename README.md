@@ -81,7 +81,7 @@ import std/[
     asyncdispatch,
     strformat
 ]
-import mcsrvstatpkg/base
+import mcsrvstat/base
 
 # Defining a Server object instance. This represents a Minecraft server.
 let server = Server(

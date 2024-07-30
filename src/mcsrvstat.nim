@@ -11,7 +11,7 @@ import std/[
     times
 ]
 import illwill, argparse
-import mcsrvstatpkg/base
+import mcsrvstat/base
 
 
 # Autorefresh flag variable for the terminal buffer.
