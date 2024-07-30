@@ -19,6 +19,9 @@ jobs:
 
     strategy:
       matrix:
+        nimversion:
+          - binary:2.0.8
+
         os: [ubuntu-latest, macos-latest, windows-latest]
         include:
           - os: ubuntu-latest
@@ -39,6 +42,8 @@ jobs:
 
     - name: Setup Nim
       uses: iffy/install-nim@v5
+      with:
+        version: ${{ matrix.nimversion }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
