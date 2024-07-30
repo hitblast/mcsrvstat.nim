@@ -41,8 +41,7 @@ jobs:
       - name: Build
         run: |
           nimble doc2 src/mcsrvstat/base.nim --accept
-          cd src/mcsrvstat/htmldocs
-          mv base.html index.html
+          cd src/mcsrvstat/htmldocs && mv base.html index.html
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
