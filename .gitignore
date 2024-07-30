@@ -10,6 +10,5 @@ htmldocs/
 
 # custom
 tests
-mcsrvstat
 htmldocs
 *.exe
