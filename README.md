@@ -13,6 +13,9 @@
 
 </div>
 
+> [!WARNING]
+> This project is not going to receive any major future updates. Feel free to still make contributions as pull requests are welcome.
+
 ## Table of Contents
 
 - [Installation](#-installation)
