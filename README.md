@@ -14,7 +14,7 @@
 </div>
 
 > [!WARNING]
-> This project has gone to maintenance mode as of May 2025.
+> This project has gone on maintenance mode as of May 2025.
 
 ## Table of Contents
 
