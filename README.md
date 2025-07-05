@@ -2,7 +2,7 @@
 
 <div align="center">
 
-# <img src="https://raw.githubusercontent.com/nim-lang/assets/master/Art/logo-crown.png" height="30px"/> mcsrvstat.nim <br>
+# <img src="https://raw.githubusercontent.com/nim-lang/assets/master/Art/logo-crown.png" width="30px"> mcsrvstat.nim <br>
 
 ### A hybrid and asynchronous Nim wrapper for the [Minecraft Server Status API](https://mcsrvstat.us/).
 
